@@ -16,7 +16,6 @@ const Navbar = () => {
     setUserData,
   } = useContext(AppContext)
 
-  // Safe image access
   const userImage = userData?.image
 
   const logOut = () => {
@@ -27,121 +26,111 @@ const Navbar = () => {
     navigate('/')
   }
 
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/doctors', label: 'Doctors' },
+    { path: '/about', label: 'About' },
+    { path: '/contact', label: 'Contact' },
+    { path: '/developer', label: 'Developer' },
+  ]
+
   return (
-    <nav className="bg-white/95 backdrop-blur-xl shadow-lg border-b border-emerald-100/50 sticky top-0 z-50">
+    <nav className="bg-white/95 backdrop-blur-sm border-b border-[#14213D]/10 sticky top-0 z-50 font-chart-sans">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
+        .font-chart-sans { font-family: 'Inter', system-ui, sans-serif; }
+        .font-chart-mono { font-family: 'JetBrains Mono', monospace; }
+      `}</style>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* Logo - Enhanced */}
-          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-all duration-300">
-              <img src={assets.heart} alt="" className='w-5 '  />
+        <div className="flex items-center justify-between h-18 sm:h-20">
+
+    
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+            <div className="w-10 h-10 bg-[#14213D] rounded-sm flex items-center justify-center flex-shrink-0">
+              <img src={assets.heart} alt="" className="w-4 invert" />
             </div>
             <div>
-              <h1 className="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                CareConnect
-              </h1>
-              <p className="text-xs text-emerald-600 font-medium tracking-wide">Healthcare Simplified</p>
+              <h1 className="font-chart-serif text-xl font-semibold text-[#14213D] leading-none">CareConnect</h1>
+              <p className="font-chart-mono text-[9px] tracking-[0.15em] text-[#0F6E56] uppercase mt-1">Healthcare, simplified</p>
             </div>
           </div>
 
-          {/* Desktop Menu - Enhanced with Animations */}
-          <ul className="hidden lg:flex items-center gap-2 font-medium">
-            {[
-              { path: '/', label: 'HOME' },
-              { path: '/doctors', label: 'DOCTORS' },
-              { path: '/about', label: 'ABOUT' },
-              { path: '/contact', label: 'CONTACT' },
-              { path: '/developer', label: 'DEVELOPER' }
-            ].map(({ path, label }, index) => (
+      
+          <ul className="hidden lg:flex items-center gap-1 font-chart-mono text-[11px] tracking-[0.1em] uppercase">
+            {navLinks.map(({ path, label }) => (
               <NavLink
-                key={index}
+                key={path}
                 to={path}
-                className={({ isActive }) => `
-                  relative px-4 py-2 rounded-2xl font-semibold text-sm transition-all duration-300
-                  group hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 hover:shadow-md
-                  ${isActive ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg' : 'text-gray-700'}
-                `}
+                className={({ isActive }) =>
+                  `relative px-4 py-2 font-medium transition-colors duration-150 border-b-2 -mb-px
+                  ${isActive ? 'text-[#14213D] border-[#0F6E56]' : 'text-[#9A968C] border-transparent hover:text-[#14213D]'}`
+                }
               >
-                <span>{label}</span>
-                {path !== '/' && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 group-hover:w-full transition-all duration-300 origin-center" />
-                )}
+                {label}
               </NavLink>
             ))}
           </ul>
 
-          {/* Right Section */}
           <div className="flex items-center gap-4">
             {userToken ? (
-              /* Enhanced Profile Dropdown */
               <div className="flex items-center cursor-pointer gap-2 group relative">
-                {/* Profile Image */}
-                <div className="relative">
-                  <img
-                    src={userImage || assets.profile_pic}
-                    alt="Profile"
-                    className="rounded-2xl w-12 h-12 object-cover ring-2 ring-emerald-200/50 shadow-lg group-hover:ring-emerald-300/70 transition-all duration-300"
-                  />
-                  {/* Online Status */}
-                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full ring-2 ring-white shadow-md animate-pulse"></div>
-                </div>
+                <img
+                  src={userImage || assets.profile_pic}
+                  alt="Profile"
+                  className="rounded-sm w-9 h-9 object-cover border border-[#14213D]/15"
+                />
+                <svg className="w-3 h-3 text-[#9A968C] group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
 
-                {/* Dropdown Icon */}
-                <div className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-md group-hover:rotate-180 transition-all duration-300">
-                  <img src={assets.dropdown_icon} alt="" className='w-2' />
-                </div>
-
-                {/* Enhanced Dropdown Menu */}
-                <div className="absolute right-0 top-14 hidden group-hover:block bg-white/95 backdrop-blur-xl p-2 rounded-2xl shadow-2xl border border-emerald-100/50 min-w-56 z-50 animate-in fade-in-slide-down duration-200">
-                  <div className="py-2">
-                    <p className="px-4 py-2 text-sm font-semibold text-emerald-700 border-b border-emerald-100 mb-2">
-                      Welcome back!
-                    </p>
-                    <div className="space-y-1">
-                      <button
-                        onClick={() => navigate('/my-profile')}
-                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-all flex items-center gap-3 group/item"
-                      >
-                        <img src={assets.people} alt="" className='w-4' />
-                        My Profile
-                      </button>
-                      <button
-                        onClick={() => navigate('/my-appointments')}
-                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-all flex items-center gap-3 group/item"
-                      >
-                        <img src={assets.calendar} alt="" className='w-4' />
-                        My Appointments
-                      </button>
-                      <button
-                        onClick={logOut}
-                        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all flex items-center gap-3 group/item mt-1"
-                      >
-                        <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
-                      </button>
-                    </div>
-                  </div>
+             
+                <div className="absolute right-0 top-12 hidden group-hover:block bg-white p-1.5 rounded-md border border-[#14213D]/10 shadow-[0_10px_30px_-8px_rgba(20,33,61,0.20)] min-w-52 z-50">
+                  <p className="font-chart-mono text-[9px] tracking-[0.15em] text-[#9A968C] uppercase px-3 pt-2 pb-2 border-b border-[#14213D]/8 mb-1">
+                    Signed in
+                  </p>
+                  <button
+                    onClick={() => navigate('/my-profile')}
+                    className="w-full text-left px-3 py-2.5 text-sm font-medium text-[#14213D] hover:bg-[#FAFAF7] rounded-sm transition-colors flex items-center gap-3"
+                  >
+                    <img src={assets.people} alt="" className="w-4" />
+                    My profile
+                  </button>
+                  <button
+                    onClick={() => navigate('/my-appointments')}
+                    className="w-full text-left px-3 py-2.5 text-sm font-medium text-[#14213D] hover:bg-[#FAFAF7] rounded-sm transition-colors flex items-center gap-3"
+                  >
+                    <img src={assets.calendar} alt="" className="w-4" />
+                    My appointments
+                  </button>
+                  <button
+                    onClick={logOut}
+                    className="w-full text-left px-3 py-2.5 text-sm font-semibold text-[#C1493A] hover:bg-[#C1493A]/6 rounded-sm transition-colors flex items-center gap-3 mt-1"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Log out
+                  </button>
                 </div>
               </div>
             ) : (
-              /* Enhanced CTA Button */
               <button
                 onClick={() => navigate('/login')}
-                className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-2xl font-bold text-sm shadow-xl hover:shadow-emerald-500/50 hover:scale-105 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hidden lg:block"
+                className="bg-[#14213D] text-white px-6 py-2.5 rounded-sm font-semibold text-xs tracking-wide uppercase hover:bg-[#0F6E56] transition-colors duration-200 hidden lg:block"
               >
-                CREATE ACCOUNT
+                Create account
               </button>
             )}
 
-            {/* Mobile Menu Icon - Enhanced */}
+          
             <button
               onClick={() => setShowMenu(true)}
-              className="lg:hidden p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 hover:scale-110 transition-all duration-300 shadow-md"
+              className="lg:hidden p-2 rounded-sm border border-[#14213D]/12 text-[#14213D] hover:bg-[#FAFAF7] transition-colors duration-150"
+              aria-label="Open menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -149,57 +138,45 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ---------------- ENHANCED MOBILE MENU ---------------- */}
+     
       <div
-        className={`fixed inset-0 bg-gradient-to-b from-emerald-500/95 to-teal-500/95 backdrop-blur-2xl z-40 transform ${
-          showMenu ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-        } transition-all duration-500 lg:hidden`}
+        className={`fixed inset-0 bg-white z-40 transform ${
+          showMenu ? 'translate-x-0' : 'translate-x-full'
+        } transition-transform duration-300 lg:hidden font-chart-sans`}
       >
-        {/* Close Button */}
-        <div className="flex justify-end p-6">
+        <div className="flex items-center justify-between p-5 border-b border-[#14213D]/10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-[#14213D] rounded-sm flex items-center justify-center">
+              <img src={assets.heart} alt="" className="w-3.5 invert" />
+            </div>
+            <h1 className="font-chart-serif text-lg font-semibold text-[#14213D]">CareConnect</h1>
+          </div>
           <button
             onClick={() => setShowMenu(false)}
-            className="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 shadow-xl"
+            className="w-9 h-9 rounded-sm border border-[#14213D]/12 flex items-center justify-center text-[#14213D] hover:bg-[#FAFAF7] transition-colors"
+            aria-label="Close menu"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Mobile Links */}
-        <div className="flex flex-col items-center gap-8 text-lg font-semibold text-white px-6 mt-8">
-          <NavLink 
-            to="/" 
-            onClick={() => setShowMenu(false)}
-            className="py-3 px-6 rounded-2xl bg-white/20 backdrop-blur-xl hover:bg-white/30 hover:scale-105 transition-all duration-300 w-full text-center shadow-xl"
-          >
-            HOME
-          </NavLink>
-
-          <NavLink 
-            to="/doctors" 
-            onClick={() => setShowMenu(false)}
-            className="py-3 px-6 rounded-2xl bg-white/20 backdrop-blur-xl hover:bg-white/30 hover:scale-105 transition-all duration-300 w-full text-center shadow-xl"
-          >
-            DOCTORS
-          </NavLink>
-
-          <NavLink 
-            to="/about" 
-            onClick={() => setShowMenu(false)}
-            className="py-3 px-6 rounded-2xl bg-white/20 backdrop-blur-xl hover:bg-white/30 hover:scale-105 transition-all duration-300 w-full text-center shadow-xl"
-          >
-            ABOUT
-          </NavLink>
-
-          <NavLink 
-            to="/contact" 
-            onClick={() => setShowMenu(false)}
-            className="py-3 px-6 rounded-2xl bg-white/20 backdrop-blur-xl hover:bg-white/30 hover:scale-105 transition-all duration-300 w-full text-center shadow-xl"
-          >
-            CONTACT
-          </NavLink>
+        <div className="flex flex-col px-5 py-4">
+          {navLinks.map(({ path, label }) => (
+            <NavLink
+              key={path}
+              to={path}
+              onClick={() => setShowMenu(false)}
+              className={({ isActive }) =>
+                `py-3.5 px-3 border-b border-[#14213D]/8 text-base font-medium transition-colors
+                ${isActive ? 'text-[#14213D]' : 'text-[#6B6458]'}`
+              }
+              style={({ isActive }) => ({ borderLeft: isActive ? '3px solid #0F6E56' : '3px solid transparent' })}
+            >
+              {label}
+            </NavLink>
+          ))}
 
           {!userToken && (
             <button
@@ -207,48 +184,37 @@ const Navbar = () => {
                 navigate('/login')
                 setShowMenu(false)
               }}
-              className="bg-white text-emerald-600 px-12 py-4 rounded-3xl font-bold text-lg shadow-2xl hover:shadow-white/50 hover:scale-105 transition-all duration-300 mt-4"
+              className="mt-6 w-full py-3.5 bg-[#14213D] text-white font-semibold text-sm rounded-sm hover:bg-[#0F6E56] transition-colors duration-200"
             >
-              CREATE ACCOUNT
+              Create account
             </button>
           )}
 
           {userToken && (
-            <div className="w-full space-y-3 bg-white/10 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/20">
+            <div className="mt-6 space-y-1">
+              <p className="font-chart-mono text-[10px] tracking-[0.15em] text-[#9A968C] uppercase px-3 mb-2">Account</p>
               <button
-                onClick={() => {
-                  navigate('/my-profile')
-                  setShowMenu(false)
-                }}
-                className="w-full py-3 px-6 text-left bg-white/30 backdrop-blur-xl rounded-2xl hover:bg-white/50 transition-all flex items-center gap-4 text-lg"
+                onClick={() => { navigate('/my-profile'); setShowMenu(false) }}
+                className="w-full py-3 px-3 text-left rounded-sm hover:bg-[#FAFAF7] transition-colors flex items-center gap-3 text-sm font-medium text-[#14213D]"
               >
-                <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                My Profile
+                <img src={assets.people} alt="" className="w-4" />
+                My profile
               </button>
-
               <button
-                onClick={() => {
-                  navigate('/my-appointments')
-                  setShowMenu(false)
-                }}
-                className="w-full py-3 px-6 text-left bg-white/30 backdrop-blur-xl rounded-2xl hover:bg-white/50 transition-all flex items-center gap-4 text-lg"
+                onClick={() => { navigate('/my-appointments'); setShowMenu(false) }}
+                className="w-full py-3 px-3 text-left rounded-sm hover:bg-[#FAFAF7] transition-colors flex items-center gap-3 text-sm font-medium text-[#14213D]"
               >
-                <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                My Appointments
+                <img src={assets.calendar} alt="" className="w-4" />
+                My appointments
               </button>
-
               <button
                 onClick={logOut}
-                className="w-full py-3 px-6 text-left bg-red-500/20 backdrop-blur-xl rounded-2xl hover:bg-red-500/30 text-red-200 hover:text-red-100 transition-all flex items-center gap-4 text-lg font-bold border border-red-400/30"
+                className="w-full py-3 px-3 text-left rounded-sm hover:bg-[#C1493A]/6 transition-colors flex items-center gap-3 text-sm font-semibold text-[#C1493A]"
               >
-                <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Logout
+                Log out
               </button>
             </div>
           )}

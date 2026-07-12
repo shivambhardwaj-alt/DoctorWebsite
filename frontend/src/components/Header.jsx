@@ -1,181 +1,172 @@
 import React from 'react'
 import { assets } from '../assets/assets'
 
+const features = [
+  {
+    title: 'Verified doctors',
+    text: 'All specialists rigorously verified',
+    color: '#0F6E56',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Secure booking',
+    text: 'End-to-end encrypted payments',
+    color: '#7A8B99',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      </svg>
+    ),
+  },
+  {
+    title: '24/7 support',
+    text: 'Instant assistance, any time',
+    color: '#B36B7A',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    ),
+  },
+]
+
 const Header = () => {
   return (
-    <header className="min-h-screen bg-gradient-to-br from-emerald-50 via-lime-50 to-teal-50 py-20 lg:py-32 xl:py-40 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,197,94,0.12),transparent),radial-gradient(circle_at_70%_80%,rgba(190,242,100,0.1),transparent),radial-gradient(circle_at_10%_90%,rgba(20,184,166,0.08),transparent)]" />
-        
-        {/* Floating Geometric Elements */}
-        <div className="absolute top-24 left-12 w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-emerald-400/20 to-lime-400/20 rounded-2xl rotate-12 animate-float-slow"></div>
-        <div className="absolute top-1/2 left-8 w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-lime-500/20 to-teal-500/20 rounded-xl -rotate-6 animate-float-medium delay-300"></div>
-        <div className="absolute bottom-32 right-16 w-28 h-28 lg:w-32 lg:h-32 bg-gradient-to-tr from-teal-400/15 to-emerald-400/15 rounded-3xl animate-float-fast delay-600"></div>
-        <div className="absolute bottom-20 left-1/3 w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-emerald-300/25 to-lime-300/25 rounded-lg rotate-45 animate-pulse delay-1000"></div>
-      </div>
+    <header className="bg-white py-14 sm:py-20 lg:py-24 px-4 relative overflow-hidden">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
+        .font-chart-sans { font-family: 'Inter', system-ui, sans-serif; }
+        .font-chart-mono { font-family: 'JetBrains Mono', monospace; }
+        .chart-grid {
+          background-image:
+            linear-gradient(to right, #0F6E5608 1px, transparent 1px),
+            linear-gradient(to bottom, #0F6E5608 1px, transparent 1px);
+          background-size: 28px 28px;
+        }
+        @keyframes drawPulse {
+          to { stroke-dashoffset: 0; }
+        }
+        .pulse-path {
+          stroke-dasharray: 500;
+          stroke-dashoffset: 500;
+          animation: drawPulse 1.8s ease-out 0.3s forwards;
+        }
+        @keyframes riseIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .rise-in { animation: riseIn 0.6s ease-out both; }
+        .rise-in-delay { animation: riseIn 0.6s ease-out 0.15s both; }
+        @media (prefers-reduced-motion: reduce) {
+          .pulse-path { animation: none; stroke-dashoffset: 0; }
+          .rise-in, .rise-in-delay { animation: none; }
+        }
+      `}</style>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 xl:px-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 xl:gap-32 items-center min-h-[80vh]">
-          
-          {/* Left: Vertical Content Stack */}
-          <div className="space-y-12 lg:space-y-16 order-2 lg:order-1 animate-slide-in-left">
-            {/* Top Badge */}
-            <div className="inline-flex items-center gap-3 px-6 py-4 bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-lime-100/60 max-w-max ring-2 ring-lime-50/50 hover:ring-lime-200/50 transition-all duration-500">
-              <div className="w-3 h-12 bg-gradient-to-b from-emerald-500 to-lime-500 rounded-full shadow-lg"></div>
-              <div>
-                <p className="text-lg lg:text-xl font-bold text-emerald-800 tracking-tight">
-                  Trusted Care Network
-                </p>
-                <p className="text-sm text-lime-700 font-semibold">150+ Verified Specialists</p>
-              </div>
-            </div>
+      <div className="absolute inset-0 chart-grid pointer-events-none" />
 
-            {/* Hero Headline - Split Layout */}
-            <div className="space-y-8">
-              <div>
-                <h1 className="text-5xl lg:text-6xl xl:text-7xl 2xl:text-[5rem] font-black bg-gradient-to-r from-emerald-800 via-lime-800 to-teal-800 bg-clip-text text-transparent leading-[0.88] drop-shadow-2xl">
-                  Find & Book
-                </h1>
-                
-                <h1 className="text-5xl lg:text-6xl xl:text-7xl 2xl:text-[5rem] font-black bg-gradient-to-r from-emerald-700 via-lime-600 to-teal-700 bg-clip-text text-transparent leading-[0.88] drop-shadow-xl">
-                  Top Doctors Instantly
-                </h1>
-              </div>
+      <div className="max-w-7xl mx-auto relative font-chart-sans">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-              <p className="text-xl lg:text-2xl xl:text-3xl font-light text-emerald-800/90 max-w-lg leading-relaxed backdrop-blur-sm tracking-wide">
-                Connect with <span className="font-bold text-lime-700 bg-lime-100/50 px-2 py-1 rounded-xl">150+</span> verified specialists. 
-                Secure payments, instant confirmation, 24/7 support.
+          {/* Left content */}
+          <div className="order-2 lg:order-1 rise-in">
+            <div className="inline-flex items-center gap-2 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0F6E56]" />
+              <p className="font-chart-mono text-[11px] tracking-[0.25em] text-[#0F6E56] uppercase">
+                150+ verified specialists
               </p>
             </div>
 
+            <h1 className="font-chart-serif text-4xl sm:text-5xl lg:text-6xl font-semibold text-[#14213D] tracking-tight leading-[1.05] mb-6">
+              Find and book top doctors, instantly
+            </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="group p-6 bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-lime-100/50 hover:shadow-2xl hover:-translate-y-2 hover:border-lime-200/60 transition-all duration-500 overflow-hidden">
-                <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-emerald-500 to-lime-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+            <p className="text-base sm:text-lg text-[#4A4438] max-w-lg leading-relaxed mb-9">
+              Connect with verified specialists across every speciality. Secure payments, instant confirmation, support around the clock.
+            </p>
+
+            {/* Feature cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-9">
+              {features.map((item) => (
+                <div
+                  key={item.title}
+                  className="p-4 bg-white rounded-sm border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.04)]"
+                  style={{ borderLeft: `3px solid ${item.color}` }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-sm flex items-center justify-center mb-3"
+                    style={{ backgroundColor: `${item.color}14`, color: item.color }}
+                  >
+                    {item.icon}
+                  </div>
+                  <h4 className="text-sm font-semibold text-[#14213D] mb-1">{item.title}</h4>
+                  <p className="text-xs text-[#6B6458] leading-relaxed">{item.text}</p>
                 </div>
-                <h4 className="text-lg font-bold text-emerald-800 mb-2 group-hover:text-lime-700">Verified Doctors</h4>
-                <p className="text-sm text-emerald-700 leading-relaxed">All specialists rigorously verified</p>
-              </div>
-              <div className="group p-6 bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-lime-100/50 hover:shadow-2xl hover:-translate-y-2 hover:border-lime-200/60 transition-all duration-500 overflow-hidden">
-                <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-lime-500 to-teal-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-bold text-emerald-800 mb-2 group-hover:text-lime-700">Secure Booking</h4>
-                <p className="text-sm text-emerald-700 leading-relaxed">End-to-end encryption</p>
-              </div>
-              <div className="group p-6 bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-lime-100/50 hover:shadow-2xl hover:-translate-y-2 hover:border-lime-200/60 transition-all duration-500 overflow-hidden">
-                <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <h4 className="text-lg font-bold text-emerald-800 mb-2 group-hover:text-lime-700">24/7 Support</h4>
-                <p className="text-sm text-emerald-700 leading-relaxed">Instant assistance available</p>
-              </div>
+              ))}
             </div>
 
-           
-            <div className="flex flex-col lg:flex-row gap-4 pt-8">
-              <div className='bg-emerald-600 rounded-xl px-2 py-3 flex items-center justify-center text-white font-medium cursor-pointer hover:translate transform transition-all duration-300'>
-                <button className='px-3 py-1'>Book Appointments</button>
-              </div>
-              <div className='bg-emerald-600 rounded-xl px-2 py-3 flex items-center justify-center text-white font-medium cursor-pointer hover:translate transform transition-all duration-300 animate-bounce'>
-                <button className='px-3 py-1'>
-                See How it works ?
-                </button>
-              </div>
-              
-             
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button className="px-7 py-3 bg-[#14213D] text-white font-semibold text-sm rounded-sm hover:bg-[#0F6E56] transition-colors duration-200">
+                Book appointment
+              </button>
+              <button className="px-7 py-3 border border-[#14213D]/20 text-[#14213D] font-medium text-sm rounded-sm hover:bg-[#FAFAF7] transition-colors duration-200">
+                See how it works
+              </button>
             </div>
           </div>
 
-          {/* Right: Elevated Image Section */}
-          <div className="order-1 lg:order-2 animate-slide-in-right relative">
-            <div className="relative group max-w-md lg:max-w-lg xl:max-w-xl mx-auto lg:mx-0">
-              {/* Elevated Image Container */}
-              <div className="relative z-20 p-8 lg:p-12 bg-gradient-to-br from-white/95 via-lime-50/80 to-emerald-50/50 backdrop-blur-2xl rounded-4xl shadow-2xl border border-lime-100/60 hover:border-emerald-200/70 transition-all duration-700 hover:shadow-emerald-500/20">
-                <img 
-                  src={assets.headerImage} 
-                  alt="Medical consultation" 
-                  className="w-full h-80 lg:h-96 xl:h-[28rem] object-contain mx-auto group-hover:scale-105 group-hover:rotate-1 transition-all duration-1000 origin-center drop-shadow-xl"
+          {/* Right image */}
+          <div className="order-1 lg:order-2 rise-in-delay">
+            <div className="relative max-w-md lg:max-w-lg mx-auto lg:mx-0">
+              <div className="bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05),0_20px_48px_-20px_rgba(20,33,61,0.20)] p-6 sm:p-8">
+                <svg viewBox="0 0 300 32" className="w-full h-6 mb-2" preserveAspectRatio="none">
+                  <path
+                    className="pulse-path"
+                    d="M0,16 L70,16 L84,16 L92,4 L102,28 L112,8 L120,16 L300,16"
+                    fill="none"
+                    stroke="#0F6E56"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <img
+                  src={assets.headerImage}
+                  alt="Medical consultation"
+                  className="w-full h-72 sm:h-80 lg:h-96 object-contain mx-auto"
                 />
               </div>
 
-              {/* Floating Status Indicators */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-emerald-500 to-lime-500 text-white px-6 py-2 rounded-3xl text-sm font-bold shadow-2xl ring-2 ring-white/50 z-10 animate-bounce-slow">
-                Available Now
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0F6E56] text-white px-4 py-1.5 rounded-sm text-xs font-semibold tracking-wide">
+                Available now
               </div>
-              
-              <div className="absolute top-12 right-8 w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-lime-400/40 to-emerald-400/40 rounded-3xl blur-xl animate-pulse"></div>
-              <div className="absolute bottom-12 left-8 w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-tr from-teal-400/30 to-lime-400/30 rounded-2xl blur-lg animate-float-glow delay-400"></div>
-              <div className="absolute -bottom-6 right-12 w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-emerald-300/50 to-lime-300/50 rounded-xl shadow-lg ring-2 ring-white/30 z-10"></div>
             </div>
 
-            {/* Bottom Trust Bar */}
-            <div className="mt-12 lg:mt-16 p-4 lg:p-6 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl border border-lime-100/50 flex items-center justify-center gap-1 text-sm font-semibold text-emerald-700 overflow-hidden">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-lime-500 rounded-full animate-ping"></div>
-                Free Cancellation
-              </div>
-              <div className="w-px h-6 bg-emerald-200 mx-1 lg:mx-2"></div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-lime-500 rounded-full animate-ping" style={{animationDelay: '100ms'}}></div>
-                Instant Confirmation
-              </div>
-              <div className="w-px h-6 bg-emerald-200 mx-1 lg:mx-2"></div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-lime-500 rounded-full animate-ping" style={{animationDelay: '200ms'}}></div>
-                Secure Payments
-              </div>
+            {/* Trust bar */}
+            <div className="mt-8 p-4 bg-white rounded-sm border border-[#14213D]/10 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-chart-mono text-[11px] tracking-[0.05em] uppercase text-[#6B6458]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0F6E56]" />
+                Free cancellation
+              </span>
+              <span className="w-px h-3.5 bg-[#14213D]/10" />
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0F6E56]" />
+                Instant confirmation
+              </span>
+              <span className="w-px h-3.5 bg-[#14213D]/10" />
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0F6E56]" />
+                Secure payments
+              </span>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-12px) rotate(2deg); }
-        }
-        @keyframes float-medium {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes float-fast {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-16px) rotate(-1deg); }
-        }
-        @keyframes float-glow {
-          0%, 100% { transform: scale(1) translateY(0px); }
-          50% { transform: scale(1.1) translateY(-4px); }
-        }
-        @keyframes bounce-slow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes slide-in-left {
-          from { opacity: 0; transform: translateX(-60px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slide-in-right {
-          from { opacity: 0; transform: translateX(60px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        .animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
-        .animate-float-medium { animation: float-medium 9s ease-in-out infinite; }
-        .animate-float-fast { animation: float-fast 5s ease-in-out infinite; }
-        .animate-float-glow { animation: float-glow 4s ease-in-out infinite; }
-        .animate-bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
-        .animate-slide-in-left { animation: slide-in-left 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-        .animate-slide-in-right { animation: slide-in-right 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards; opacity: 0; }
-      `}</style>
     </header>
   )
 }

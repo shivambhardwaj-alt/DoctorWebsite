@@ -2,66 +2,86 @@ import React from 'react'
 import { assets, specialityData } from '../assets/assets'
 import { Link } from 'react-router-dom'
 
+
+const SPECIALITY_TABS = {
+  'General Physician': '#7A8B99',
+  'Gynecologist': '#B36B7A',
+  'Dermatologist': '#C99B4E',
+  'Pediatricians': '#3B8A6E',
+  'Neurologist': '#7C6B9B',
+  'Gastroenterologist': '#A17C4E',
+}
+const tabColor = (spec) => SPECIALITY_TABS[spec] || '#9A968C'
+
 const SpecialityMenu = () => {
   return (
-    <section id="speciality" className="py-24 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-teal-50/50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-20 text-center">
-        {/* Header */}
-        <div className="mb-16 lg:mb-24 space-y-4">
-          <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-800 via-green-800 to-teal-800 bg-clip-text text-transparent">
-            Find Doctors by Speciality
+    <section id="speciality" className="py-16 sm:py-20 lg:py-24 bg-white px-4 relative overflow-hidden">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
+        .font-chart-sans { font-family: 'Inter', system-ui, sans-serif; }
+        .font-chart-mono { font-family: 'JetBrains Mono', monospace; }
+        .chart-grid {
+          background-image:
+            linear-gradient(to right, #0F6E5608 1px, transparent 1px),
+            linear-gradient(to bottom, #0F6E5608 1px, transparent 1px);
+          background-size: 28px 28px;
+        }
+      `}</style>
+
+      <div className="absolute inset-0 chart-grid pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto text-center relative font-chart-sans">
+
+      
+        <div className="mb-12 sm:mb-16">
+          <p className="font-chart-mono text-[11px] tracking-[0.25em] text-[#0F6E56] uppercase mb-3">
+            Filed by speciality
+          </p>
+          <h2 className="font-chart-serif text-3xl sm:text-4xl font-semibold text-[#14213D] mb-3">
+            Find doctors by speciality
           </h2>
-          <div className="w-24 h-1 mx-auto bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full shadow-md" />
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Discover top specialists in your area. Book with confidence.
+          <p className="text-sm sm:text-base text-[#6B6458] max-w-xl mx-auto leading-relaxed">
+            Discover top specialists in your area, and book with confidence.
           </p>
         </div>
 
-        {/* Speciality Grid */}
-        <div className="relative">
-          {/* Background Decorations */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,197,94,0.08),transparent),radial-gradient(circle_at_80%_80%,rgba(20,184,166,0.08),transparent)] -z-10" />
-          
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 lg:gap-8 max-w-6xl mx-auto px-4 lg:px-0">
-            {specialityData.map((item, index) => (
-              <Link 
-              onClick={() => scrollTo(0,0)}
+      
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
+          {specialityData.map((item, index) => {
+            const color = tabColor(item.speciality)
+            return (
+              <Link
+                onClick={() => scrollTo(0, 0)}
                 key={index}
                 to={`doctors/${item.speciality}`}
-                className="group relative flex flex-col items-center p-6 bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl border border-white/50 hover:border-emerald-200 hover:bg-white/90 transition-all duration-500 hover:-translate-y-4 hover:scale-105 cursor-pointer overflow-hidden h-48 flex-shrink-0"
+                className="group relative flex flex-col items-center bg-white rounded-md border border-[#14213D]/10
+                  shadow-[0_1px_2px_rgba(20,33,61,0.05)] hover:shadow-[0_10px_24px_-10px_rgba(20,33,61,0.16)]
+                  hover:-translate-y-0.5 transition-all duration-200 py-6 px-3"
               >
-                {/* Card Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 to-teal-400/10 scale-0 group-hover:scale-100 transition-all duration-500 rounded-3xl" />
-                
-                {/* Icon Container */}
-                <div className="relative z-10 w-20 h-20 lg:w-24 lg:h-24 mb-6 flex items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 shadow-lg group-hover:shadow-emerald-200 group-hover:from-emerald-200 group-hover:to-teal-200 transition-all duration-500">
-                  <img 
-                    src={item.image} 
+                {/* Folded speciality tab */}
+                <div
+                  className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1.5 rounded-full"
+                  style={{ backgroundColor: color }}
+                />
+
+                <div
+                  className="w-14 h-14 rounded-sm flex items-center justify-center mb-3 border border-[#14213D]/8"
+                  style={{ backgroundColor: `${color}14` }}
+                >
+                  <img
+                    src={item.image}
                     alt={item.speciality}
-                    className="w-12 h-12 lg:w-14 lg:h-14 object-contain group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg"
+                    className="w-8 h-8 object-contain"
                   />
                 </div>
-                
-                {/* Label */}
-                <p className="text-sm lg:text-base font-semibold text-gray-800 leading-tight group-hover:text-emerald-700 transition-colors duration-300 px-2 text-center">
+
+                <p className="text-xs sm:text-sm font-medium text-[#14213D] leading-tight text-center group-hover:text-[#0F6E56] transition-colors duration-150">
                   {item.speciality}
                 </p>
-                
-              
-                <div className="absolute bottom-4 right-4 w-8 h-8 bg-emerald-500/20 rounded-xl backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                  <svg className="w-4 h-4 text-emerald-600 rotate-45 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
               </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="mt-20 flex flex-col items-center gap-2 opacity-75">
-          <div className="w-px h-12 bg-gradient-to-b from-emerald-400 to-teal-400 rounded-full animate-pulse" />
-          <p className="text-xs text-gray-500 font-medium tracking-wider uppercase">Scroll for more</p>
+            )
+          })}
         </div>
       </div>
     </section>

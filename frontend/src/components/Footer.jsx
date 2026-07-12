@@ -3,50 +3,49 @@ import { assets } from '../assets/assets.js'
 
 const Footer = () => {
   return (
-    <footer className="relative bg-gradient-to-t from-emerald-900 via-green-900 to-emerald-800 text-white overflow-hidden mt-30">
+    <footer className="bg-[#14213D] text-white font-chart-sans">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+        .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
+        .font-chart-sans { font-family: 'Inter', system-ui, sans-serif; }
+        .font-chart-mono { font-family: 'JetBrains Mono', monospace; }
+      `}</style>
 
-      {/* Soft background overlay */}
-      <div className=" absolute inset-0 bg-emerald-900/40"></div>
-
-      {/* Main Content */}
-      <div className=" relative max-w-7xl mx-auto px-6 lg:px-20 py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-14">
+      {/* Main content */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-20 py-14 sm:py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
 
         {/* Brand */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
             <img
               src={assets.careconnect}
-              alt="CareConnect Logo"
-              className="w-14 h-14 rounded-xl bg-white p-1"
+              alt="CareConnect logo"
+              className="w-10 h-10 rounded-sm bg-white p-1"
             />
-            <span className="text-xl font-extrabold text-emerald-300">
-              CareConnect
-            </span>
+            <span className="font-chart-serif text-xl font-semibold">CareConnect</span>
           </div>
 
-          <p className="text-emerald-100 leading-relaxed text-sm">
-            Your trusted healthcare partner connecting you with verified doctors
-            for seamless appointments anytime, anywhere.
+          <p className="text-white/60 leading-relaxed text-sm">
+            Your trusted healthcare partner, connecting you with verified doctors for seamless appointments anytime, anywhere.
           </p>
 
-          {/* Social Icons */}
-          <div className="flex gap-4" >
-           <img src={assets.whatsapp} alt="" className='w-10 bg-white rounded-xl px-2 py-2 cursor-pointer' />
-           <img src={assets.phone} alt="" className='w-10 bg-white rounded-xl px-2 py-2 cursor-pointer' />
+          <div className="flex gap-2">
+            <a href="#" aria-label="WhatsApp" className="w-9 h-9 rounded-sm border border-white/15 flex items-center justify-center hover:border-[#3B8A6E] hover:bg-white/5 transition-colors">
+              <img src={assets.whatsapp} alt="" className="w-4" />
+            </a>
+            <a href="#" aria-label="Phone" className="w-9 h-9 rounded-sm border border-white/15 flex items-center justify-center hover:border-[#3B8A6E] hover:bg-white/5 transition-colors">
+              <img src={assets.phone} alt="" className="w-4" />
+            </a>
           </div>
         </div>
 
         {/* Company */}
         <div>
-          <h4 className="text-lg font-semibold text-emerald-200 mb-5">
-            Company
-          </h4>
-          <ul className="space-y-3 text-sm">
-            {['Home', 'About Us', 'Contact', 'Privacy Policy'].map(item => (
+          <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#5DCAA5] uppercase mb-4">Company</p>
+          <ul className="space-y-2.5 text-sm text-white/70">
+            {['Home', 'About us', 'Contact', 'Privacy policy'].map(item => (
               <li key={item}>
-                <a href="#" className="hover:text-emerald-300 transition">
-                  {item}
-                </a>
+                <a href="#" className="hover:text-white transition-colors">{item}</a>
               </li>
             ))}
           </ul>
@@ -54,15 +53,11 @@ const Footer = () => {
 
         {/* Services */}
         <div>
-          <h4 className="text-lg font-semibold text-emerald-200 mb-5">
-            Services
-          </h4>
-          <ul className="space-y-3 text-sm">
-            {['Book Appointment', 'Video Consult', 'Medicine Delivery', 'Lab Tests'].map(item => (
+          <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#5DCAA5] uppercase mb-4">Services</p>
+          <ul className="space-y-2.5 text-sm text-white/70">
+            {['Book appointment', 'Video consult', 'Medicine delivery', 'Lab tests'].map(item => (
               <li key={item}>
-                <a href="#" className="hover:text-emerald-300 transition">
-                  {item}
-                </a>
+                <a href="#" className="hover:text-white transition-colors">{item}</a>
               </li>
             ))}
           </ul>
@@ -70,37 +65,31 @@ const Footer = () => {
 
         {/* Contact */}
         <div>
-          <h4 className="text-lg font-semibold text-emerald-200 mb-5">
-            Get In Touch
-          </h4>
-
-          <div className="space-y-4 text-sm">
-            <div className="p-4 rounded-xl bg-white/10">
-              <p className="text-emerald-200 text-xs">Call Us</p>
-              <p className="font-semibold text-lg">+21 232 2332 341</p>
+          <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#5DCAA5] uppercase mb-4">Get in touch</p>
+          <div className="space-y-3 text-sm">
+            <div className="px-4 py-3 rounded-sm border border-white/10">
+              <p className="font-chart-mono text-[9px] tracking-[0.1em] text-white/50 uppercase mb-1">Call us</p>
+              <p className="font-medium">+21 232 2332 341</p>
             </div>
-
-            <div className="p-4 rounded-xl bg-white/10">
-              <p className="text-emerald-200 text-xs">Email</p>
-              <p className="font-semibold">hello@careconnect.com</p>
+            <div className="px-4 py-3 rounded-sm border border-white/10">
+              <p className="font-chart-mono text-[9px] tracking-[0.1em] text-white/50 uppercase mb-1">Email</p>
+              <p className="font-medium">hello@careconnect.com</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
+      {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-6 flex flex-col md:flex-row justify-between items-center text-xs text-emerald-200">
-          <p>© 2025 CareConnect. All rights reserved.</p>
-
-          <div className="flex gap-6 mt-3 md:mt-0">
-            <a href="#" className="hover:text-emerald-300">Terms</a>
-            <a href="#" className="hover:text-emerald-300">Privacy</a>
-            <a href="#" className="hover:text-emerald-300">Cookies</a>
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-5 flex flex-col md:flex-row justify-between items-center gap-3 font-chart-mono text-[11px] tracking-[0.05em] text-white/50">
+          <p>&copy; 2025 CareConnect. All rights reserved.</p>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="#" className="hover:text-white transition-colors">Cookies</a>
           </div>
         </div>
       </div>
-
     </footer>
   )
 }

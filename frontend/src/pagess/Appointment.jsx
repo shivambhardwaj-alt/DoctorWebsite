@@ -144,10 +144,27 @@ const Appointment = () => {
     setShowConfirmModal(true)
   }
 
+  const fontStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+    .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
+    .font-chart-sans { font-family: 'Inter', system-ui, sans-serif; }
+    .font-chart-mono { font-family: 'JetBrains Mono', monospace; }
+    .chart-grid {
+      background-image:
+        linear-gradient(to right, #0F6E5608 1px, transparent 1px),
+        linear-gradient(to bottom, #0F6E5608 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+  `
+
   if (!docInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-indigo-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white font-chart-sans">
+        <style>{fontStyles}</style>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-9 w-9 border-2 border-[#14213D]/15 border-t-[#0F6E56] mx-auto mb-3"></div>
+          <p className="font-chart-mono text-[11px] tracking-[0.2em] text-[#9A968C] uppercase">Loading record…</p>
+        </div>
       </div>
     )
   }
@@ -156,48 +173,51 @@ const Appointment = () => {
   const selectedDay = docSlots[dayIndex]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-100 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="min-h-screen bg-white py-10 sm:py-14 px-4 font-chart-sans relative overflow-hidden">
+      <style>{fontStyles}</style>
+      <div className="absolute inset-0 chart-grid pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto relative">
+
         {/* Doctor card */}
-        <div className="bg-white/90 rounded-2xl shadow-xl p-6 mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)] p-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
             <div className="flex flex-col items-center lg:order-2">
               <div className="relative">
                 <img
                   src={docInfo.image}
                   alt={docInfo.name}
-                  className="w-32 h-32 lg:w-40 lg:h-40 object-cover rounded-2xl shadow-xl ring-2 ring-white/50 bg-indigo-50 p-2"
+                  className="w-28 h-28 lg:w-36 lg:h-36 object-cover rounded-md border border-[#14213D]/10"
                 />
-                <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-emerald-500 to-teal-600 p-2 rounded-xl shadow-xl border-2 border-white">
-                  <img src={assets.verified} className="w-5 h-5" alt="Verified" />
+                <div className="absolute -bottom-2 -right-2 bg-[#0F6E56] p-1.5 rounded-sm border-2 border-white">
+                  <img src={assets.verified} className="w-4 h-4" alt="Verified" />
                 </div>
               </div>
-              <p className="mt-3 text-sm font-semibold text-gray-700">{docInfo.experience} experience</p>
+              <p className="mt-3 font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#9A968C]">{docInfo.experience} experience</p>
             </div>
 
             <div className="lg:col-span-2 lg:order-1 space-y-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{docInfo.name}</h1>
-                <p className="text-gray-600 mt-1">{docInfo.degree} • {docInfo.speciality}</p>
+                <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#0F6E56] uppercase mb-1">Doctor record</p>
+                <h1 className="font-chart-serif text-2xl sm:text-3xl font-semibold text-[#14213D]">Dr. {docInfo.name}</h1>
+                <p className="text-sm text-[#6B6458] mt-1">{docInfo.degree} &middot; {docInfo.speciality}</p>
               </div>
 
-              <div className="p-4 bg-white/60 rounded-xl">
-                <h3 className="font-bold text-gray-900 mb-2">About</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">{docInfo.about}</p>
+              <div>
+                <p className="font-chart-mono text-[10px] tracking-[0.15em] text-[#9A968C] uppercase mb-1.5">About</p>
+                <p className="text-sm text-[#4A4438] leading-relaxed">{docInfo.about}</p>
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-emerald-50 rounded-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-[#FAFAF7] border border-[#14213D]/8 rounded-sm">
                 <div>
-                  <h3 className="text-lg font-bold text-gray-800">Fee</h3>
-                  <p className="text-3xl font-black text-emerald-600">{fee}{currency_symbol}</p>
+                  <p className="font-chart-mono text-[10px] tracking-[0.15em] text-[#9A968C] uppercase mb-1">Consultation fee</p>
+                  <p className="font-chart-serif text-2xl font-semibold text-[#14213D]">{fee}{currency_symbol}</p>
                 </div>
                 <button
                   onClick={handleBookNow}
                   disabled={!slotTime}
-                  className={`px-8 py-3 rounded-xl font-bold text-white shadow-lg transition-all ${
-                    slotTime
-                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:scale-105 cursor-pointer'
-                      : 'bg-gray-400 cursor-not-allowed'
+                  className={`px-8 py-3 rounded-sm font-semibold text-sm text-white transition-colors duration-200 ${
+                    slotTime ? 'bg-[#14213D] hover:bg-[#0F6E56] cursor-pointer' : 'bg-[#9A968C]/50 cursor-not-allowed'
                   }`}
                 >
                   Book now
@@ -207,103 +227,112 @@ const Appointment = () => {
           </div>
         </div>
 
-        {/* Slots */}
-        <div className="bg-white/90 rounded-2xl shadow-xl p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Available slots</h2>
+        {/* Calendar */}
+        <div className="bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)] p-6">
+          <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#9A968C] uppercase mb-1">Schedule</p>
+          <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-5">Choose a day and time</h2>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {docSlots.map((slots, i) => (
-              <div
-                key={i}
-                onClick={() => { setDayIndex(i); setSlotTime('') }}
-                className={`p-4 rounded-xl border shadow cursor-pointer transition-all hover:-translate-y-1 ${
-                  dayIndex === i
-                    ? 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white border-indigo-400'
-                    : 'bg-white border-gray-200 hover:border-indigo-300'
-                }`}
-              >
-                <div className="text-center mb-3">
-                  <h3 className="font-bold">{daysOfWeek[slots[0].datetime.getDay()]}</h3>
-                  <p className="text-2xl font-black text-indigo-600">{slots[0].datetime.getDate()}</p>
-                </div>
-
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {slots.map((slot, idx) => (
-                    <button
-                      key={idx}
-                      disabled={slot.isBooked}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setDayIndex(i)
-                        setSlotTime(slot.time)
-                      }}
-                      className={`w-full p-2.5 rounded-lg border flex justify-between items-center text-sm transition-all ${
-                        slot.isBooked
-                          ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through'
-                          : dayIndex === i && slotTime === slot.time
-                          ? 'bg-white/30 text-white border-white/50'
-                          : 'bg-white border-gray-200 hover:bg-indigo-100'
-                      }`}
-                    >
-                      <span>{slot.time}</span>
-                      {!slot.isBooked && (
-                        <span className={`w-2.5 h-2.5 rounded-full ${
-                          dayIndex === i && slotTime === slot.time ? 'bg-white' : 'bg-emerald-500'
-                        }`}></span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+          {/* Day strip */}
+          <div className="flex gap-2 overflow-x-auto pb-2 mb-5 -mx-1 px-1">
+            {docSlots.map((slots, i) => {
+              const date = slots[0].datetime
+              const active = dayIndex === i
+              const openCount = slots.filter(s => !s.isBooked).length
+              return (
+                <button
+                  key={i}
+                  onClick={() => { setDayIndex(i); setSlotTime('') }}
+                  className={`flex-shrink-0 w-16 py-3 rounded-sm border text-center transition-colors duration-150
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F6E56]
+                    ${active
+                      ? 'bg-[#14213D] border-[#14213D] text-white'
+                      : 'bg-white border-[#14213D]/12 text-[#14213D] hover:border-[#0F6E56]/40'}`}
+                >
+                  <p className={`font-chart-mono text-[9px] tracking-[0.1em] uppercase mb-1 ${active ? 'text-white/70' : 'text-[#9A968C]'}`}>
+                    {daysOfWeek[date.getDay()]}
+                  </p>
+                  <p className="font-chart-serif text-lg font-semibold leading-none">{date.getDate()}</p>
+                  <p className={`font-chart-mono text-[9px] mt-1 ${active ? 'text-white/70' : openCount > 0 ? 'text-[#0F6E56]' : 'text-[#9A968C]'}`}>
+                    {openCount > 0 ? `${openCount} open` : 'full'}
+                  </p>
+                </button>
+              )
+            })}
           </div>
 
+          {/* Slot grid for the selected day */}
+          {selectedDay && (
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
+              {selectedDay.map((slot, idx) => {
+                const active = slotTime === slot.time
+                return (
+                  <button
+                    key={idx}
+                    disabled={slot.isBooked}
+                    onClick={() => setSlotTime(slot.time)}
+                    className={`py-2.5 rounded-sm border text-xs font-medium transition-colors duration-150
+                      focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F6E56]
+                      ${slot.isBooked
+                        ? 'bg-[#FAFAF7] border-[#14213D]/8 text-[#9A968C] line-through cursor-not-allowed'
+                        : active
+                        ? 'bg-[#0F6E56] border-[#0F6E56] text-white'
+                        : 'bg-white border-[#14213D]/12 text-[#14213D] hover:border-[#0F6E56]/50'}`}
+                  >
+                    {slot.time}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
           {slotTime && selectedDay && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl text-center">
-              <p className="font-bold">Selected</p>
-              <p className="text-sm opacity-95">
-                {daysOfWeek[selectedDay[0].datetime.getDay()]} • {slotTime} • Dr. {docInfo.name}
+            <div className="mt-5 flex items-center gap-3 bg-[#0F6E56]/6 border border-[#0F6E56]/15 rounded-sm px-4 py-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0F6E56] flex-shrink-0" />
+              <p className="text-sm text-[#14213D]">
+                <span className="font-semibold">{daysOfWeek[selectedDay[0].datetime.getDay()]} &middot; {slotTime}</span>
+                <span className="text-[#6B6458]"> with Dr. {docInfo.name}</span>
               </p>
             </div>
           )}
         </div>
       </div>
 
+      {/* Confirm modal */}
       {showConfirmModal && selectedDay && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full">
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white text-center rounded-t-2xl">
-              <h2 className="text-2xl font-bold">Confirm booking</h2>
-            </div>
+        <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-md max-w-sm w-full shadow-2xl border-t-4 font-chart-sans" style={{ borderTopColor: '#0F6E56' }}>
+            <div className="p-6">
+              <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#0F6E56] uppercase mb-1">Confirm booking</p>
+              <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-4">Confirm your appointment</h2>
 
-            <div className="p-6 space-y-4">
-              <div className="p-3 bg-gray-50 rounded-xl">
-                <p className="font-bold text-lg">{docInfo.name}</p>
-                <p className="text-sm text-gray-600">
-                  {daysOfWeek[selectedDay[0].datetime.getDay()]} • {slotTime}
+              <div className="bg-[#FAFAF7] border border-[#14213D]/8 rounded-sm px-4 py-3 mb-3">
+                <p className="font-semibold text-sm text-[#14213D]">Dr. {docInfo.name}</p>
+                <p className="text-xs text-[#6B6458] mt-0.5">
+                  {daysOfWeek[selectedDay[0].datetime.getDay()]} &middot; {slotTime}
                 </p>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-xl flex justify-between items-center">
-                <span className="font-bold text-emerald-700">Fee</span>
-                <span className="text-2xl font-black text-emerald-600">{fee}{currency_symbol}</span>
+
+              <div className="flex items-baseline justify-between px-1 mb-6">
+                <span className="font-chart-mono text-[10px] tracking-[0.15em] text-[#9A968C] uppercase">Fee</span>
+                <span className="font-chart-serif text-2xl font-semibold text-[#14213D]">{fee}{currency_symbol}</span>
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3">
                 <button
                   onClick={() => setShowConfirmModal(false)}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all"
+                  className="flex-1 py-2.5 border border-[#14213D]/20 text-[#14213D] font-medium text-sm rounded-sm hover:bg-[#14213D]/5 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={bookAppointment}
                   disabled={isBooking}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 bg-[#14213D] text-white font-semibold text-sm rounded-sm hover:bg-[#0F6E56] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {isBooking ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      Booking...
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                      Booking…
                     </>
                   ) : 'Confirm & pay'}
                 </button>
