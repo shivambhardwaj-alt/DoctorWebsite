@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { DoctorContext } from '../../context/DoctorContext';
 import axios from 'axios';
-
 import { toast } from 'react-toastify';
+
 const DoctorHome = () => {
   const {
     cancelledAppointments,
@@ -17,178 +17,211 @@ const DoctorHome = () => {
     }
   }, [doctorToken]);
 
-
-  // ========================FUNCTION TO DELETE THE APPOINTMENT FROM HISTORY =======================
-
-  const deleteAppointment = async(appointmentId) => {
-    try{
-
-      const {data} = await axios.post(backend_url + '/api/doctor/delete-appointment',{appointmentId : appointmentId},{headers:{Authorization : `Bearer ${doctorToken}`}});
-      if(data.success){
-        toast.success('Done')
+  // ======================== FUNCTION TO DELETE THE APPOINTMENT FROM HISTORY =======================
+  const deleteAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(
+        backend_url + '/api/doctor/delete-appointment',
+        { appointmentId: appointmentId },
+        { headers: { Authorization: `Bearer ${doctorToken}` } }
+      );
+      if (data.success) {
+        toast.success('Record successfully cleared');
         getCancelledAppointments();
-      }else{
-        toast.error("Failed!");
+      } else {
+        toast.error("Failed to delete record.");
       }
-      
-
-
-    }catch(error){
-      toast.error('Failed');
+    } catch (error) {
+      toast.error('An error occurred.');
     }
+  };
+
+ 
+  function nameShorter(name) {
+    if (!name) return 'N/A';
+    const cleanName = name.toString();
+    return cleanName.length > 14 ? cleanName.slice(0, 12) + "..." : cleanName;
   }
 
+ 
+  const totalCount = cancelledAppointments?.length || 0;
+  const paidCount = cancelledAppointments?.filter(item => item.userData?.payment).length || 0;
+  const pendingCount = totalCount - paidCount;
+  
+  const paidPercentage = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
+  const pendingPercentage = totalCount > 0 ? Math.round((pendingCount / totalCount) * 100) : 0;
 
 
-
-
-
-
-
-  if (!cancelledAppointments || cancelledAppointments.length === 0) {
+  if (!cancelledAppointments || totalCount === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="w-24 h-24 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-           
+      <div className="min-h-screen bg-slate-50/50 flex flex-col items-center justify-center p-6">
+        <div className="bg-white border border-slate-100 rounded-3xl p-10 max-w-md w-full text-center shadow-sm">
+          <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">No Cancelled Appointments</h2>
-          <p className="text-gray-600 text-sm md:text-base max-w-md mx-auto leading-relaxed">All your appointments are confirmed and on track. Check back later for updates.</p>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">No Cancelled Appointments</h2>
+          <p className="text-slate-500 text-sm leading-relaxed">
+            All caught up! Your schedule looks clean. Cancelled patient records will appear here.
+          </p>
         </div>
       </div>
     );
   }
 
-  function NameShorter(name) {
-    const newName = name.toString();
-    if (newName.length > 8) {
-      return newName.slice(0, 5) + "...";
-    }
-    return newName;
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50 py-8 px-0">
-      <div className="w-full">
-        {/* Header */}
-        <div className="text-center mb-12 px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4 drop-shadow-lg">
-            Cancelled Appointments
-          </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full shadow-md"></div>
+    <div className="min-h-screen bg-slate-50/50 text-slate-800 antialiased py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200/60 pb-6 gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-950">Cancellation Analytics</h1>
+            <p className="text-slate-500 text-sm mt-1">Review and manage records for processing updates.</p>
+          </div>
+          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm text-xs font-semibold text-slate-600">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            Live Records System
+          </div>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6 mb-12 px-4">
-          {cancelledAppointments.map((item) => (
-            <div 
-              key={item._id}
-              className="group bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 hover:shadow-3xl hover:-translate-y-2 hover:border-emerald-200 transition-all duration-300 overflow-hidden"
-            >
-              {/* Card Header */}
-              <div className="bg-gradient-to-r from-red-50 to-rose-50 px-8 py-6 border-b border-red-100">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <img 
-                        src={item.userData.image} 
-                        alt="Patient"
-                        className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover ring-4 ring-red-200 group-hover:ring-red-300 transition-all duration-300 shadow-2xl"
-                      />
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-200">
-                        <span className="text-xs font-bold text-white">✕</span>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl md:text-2xl font-black text-gray-900">{NameShorter(item.userData.name)}</h3>
-                      <p className="text-sm md:text-base text-gray-600">ID: {item._id.toString().slice(0,8)}...</p>
-                    </div>
-                  </div>
-                  <span className="inline-flex px-4 py-2 bg-red-100 text-red-800 text-sm md:text-base font-bold rounded-2xl shadow-md">
-                    CANCELLED
-                  </span>
-                </div>
-              </div>
 
-              {/* Card Body */}
-              <div className="p-8 space-y-6">
-                {/* Contact Info */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Email</label>
-                    <p className="text-lg font-semibold text-gray-900 break-all">{item.userData.email}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Phone</label>
-                    <p className="text-lg font-semibold text-gray-900">{item.userData.phone || 'N/A'}</p>
-                  </div>
-                </div>
-
-                {/* Gender & Address */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Gender</label>
-                    <span
-  className={`inline-flex px-4 py-2 rounded-2xl text-sm font-bold shadow-md ml-3 md:ml-3 ${
-    item.userData.Gender === 'Male'
-      ? 'bg-blue-100 text-blue-800'
-      : item.userData.Gender === 'Female'
-      ? 'bg-pink-100 text-pink-800'
-      : 'bg-green-600 text-white'
-  }`}
->
-  {item.userData.gender}
-</span>
-
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3 block">Address</label>
-                    <div className="space-y-1 bg-gray-50 p-4 rounded-2xl">
-                      <p className="font-semibold text-gray-900">{item.userData.address.line1.length === 0 ? "Not Available" : item.userData.address.line1}</p>
-                      {item.userData.address.line2 && (
-                        <p className="text-sm text-gray-600">{item.userData.address.line2}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment & Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-between pt-4 border-t border-gray-100">
-                  <span className={`inline-flex px-6 py-3 rounded-2xl text-base font-bold shadow-lg ${
-                    item.userData.payment 
-                      ? 'bg-emerald-100 text-emerald-800' 
-                      : 'bg-amber-100 text-amber-800'
-                  }`}>
-                    {item.userData.payment ? '✓ Paid' : ' Pending'}
-                  </span>
-                  <button onClick = {() =>deleteAppointment(item._id) }   className="group/btn w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-base font-bold rounded-2xl hover:from-red-600 hover:to-red-700 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-200 cursor-pointer">
-                   
-                    Delete Record
-                  </button>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Total Cancellations</p>
+              <h3 className="text-5xl font-black text-slate-900 mt-2">{totalCount}</h3>
             </div>
-          ))}
-        </div>
+            <p className="text-xs text-slate-500 mt-4 pt-4 border-t border-slate-100 flex items-center gap-1.5">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+              Requiring database housekeeping
+            </p>
+          </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 pb-12">
-          <div className="bg-white/70 backdrop-blur-xl p-8 rounded-3xl border border-white/50 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 group">
-            <div className="flex items-start space-x-4">
-              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-all duration-200">
-                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+          
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm lg:col-span-2">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-sm font-bold text-slate-900">Financial Breakdown of Cancellations</h4>
+              <span className="text-xs font-medium text-slate-400">Relative Proportions</span>
+            </div>
+            
+            <div className="space-y-4">
+           
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="font-semibold text-slate-600 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Paid ({paidCount})
+                  </span>
+                  <span className="font-bold text-slate-900">{paidPercentage}%</span>
+                </div>
+                <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                  <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${paidPercentage}%` }}></div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">Total Cancelled</p>
-                <p className="text-4xl sm:text-5xl font-black bg-gradient-to-r from-gray-900 to-gray-800 bg-clip-text text-transparent">
-                  {cancelledAppointments.length}
-                </p>
+
+      
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="font-semibold text-slate-600 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                    Unpaid / Pending ({pendingCount})
+                  </span>
+                  <span className="font-bold text-slate-900">{pendingPercentage}%</span>
+                </div>
+                <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                  <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${pendingPercentage}%` }}></div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
+
+   
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+            <h3 className="font-bold text-slate-900 text-base">Patient Document Queue</h3>
+            <span className="px-2.5 py-1 text-xs font-semibold text-red-700 bg-red-50 rounded-md border border-red-100">
+              Action Required
+            </span>
+          </div>
+
+          <div className="divide-y divide-slate-100">
+            {cancelledAppointments.map((item) => {
+              const patientGender = item.userData?.gender || item.userData?.Gender || 'N/A';
+              
+              return (
+                <div key={item._id} className="p-6 hover:bg-slate-50/50 transition-colors duration-150 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  
+          
+                  <div className="flex items-start sm:items-center gap-4 min-w-0">
+                    <img 
+                      src={item.userData?.image} 
+                      alt=""
+                      className="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200 flex-shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-bold text-slate-900 text-base tracking-tight truncate">
+                          {nameShorter(item.userData?.name)}
+                        </h4>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
+                          patientGender.toLowerCase() === 'male' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
+                          patientGender.toLowerCase() === 'female' ? 'bg-rose-50 text-rose-700 border border-rose-100' :
+                          'bg-slate-50 text-slate-600 border border-slate-200'
+                        }`}>
+                          {patientGender}
+                        </span>
+                      </div>
+                      <p className="text-xs font-mono text-slate-400 mt-0.5">ID: {item._id.slice(0, 10)}...</p>
+                    </div>
+                  </div>
+
+              
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 flex-1 text-xs">
+                    <div>
+                      <span className="block text-slate-400 font-medium mb-0.5">Email Address</span>
+                      <span className="font-semibold text-slate-700 break-all">{item.userData?.email || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="block text-slate-400 font-medium mb-0.5">Phone Number</span>
+                      <span className="font-semibold text-slate-700">{item.userData?.phone || 'N/A'}</span>
+                    </div>
+                    <div className="sm:col-span-2 md:col-span-1">
+                      <span className="block text-slate-400 font-medium mb-0.5">Registered Address</span>
+                      <span className="font-medium text-slate-600 line-clamp-1">
+                        {item.userData?.address?.line1 || 'No structural address on file'}
+                      </span>
+                    </div>
+                  </div>
+
+                
+                  <div className="flex items-center justify-between lg:justify-end gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-100">
+                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${
+                      item.userData?.payment 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' 
+                        : 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                    }`}>
+                      {item.userData?.payment ? '● Settled' : '● Unpaid'}
+                    </span>
+                    
+                    <button 
+                      onClick={() => deleteAppointment(item._id)}
+                      className="inline-flex items-center justify-center px-4 py-2 bg-white text-xs font-bold text-red-600 border border-red-200 rounded-xl hover:bg-red-50 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-100 cursor-pointer"
+                    >
+                      Purge Record
+                    </button>
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
     </div>
   );

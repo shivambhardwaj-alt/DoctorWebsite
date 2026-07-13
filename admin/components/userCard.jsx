@@ -4,10 +4,10 @@ const userCard = () => {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
     
-    {/* Card */}
+ 
     <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 relative">
       
-      {/* Close Button */}
+  
       <button
         onClick={() => setSelectedUser(false)}
         className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
@@ -15,7 +15,7 @@ const userCard = () => {
         ✕
       </button>
 
-      {/* User Data */}
+      
       <h2 className="text-xl font-bold mb-4">User Details</h2>
 
       <div className="space-y-2 text-sm">

@@ -1,154 +1,120 @@
 import React, { useContext, useEffect } from 'react'
 import { AdminContext } from '../../context/AdminContext'
-import { useState } from 'react';
-import { AppContext } from '../../context/AppContext';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import axios from 'axios';
+
+// Safely computes age from a dob string. Returns 'N/A' for anything
+// missing, malformed, or that would otherwise produce NaN.
+const getAge = (dob) => {
+  if (!dob) return 'N/A'
+
+  const birthDate = new Date(dob)
+  if (isNaN(birthDate.getTime())) return 'N/A'
+
+  const today = new Date()
+  let age = today.getFullYear() - birthDate.getFullYear()
+  const monthDiff = today.getMonth() - birthDate.getMonth()
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--
+  }
+
+  return age >= 0 ? age : 'N/A'
+}
+
 const AllAppointment = () => {
-  const { adminToken, appointmentList, getAllAppointments ,backend_url,sortByDate} = useContext(AdminContext);
+  const { adminToken, appointmentList, getAllAppointments, backend_url } = useContext(AdminContext);
 
-  const {calculateAge } = useContext(AppContext);
-  console.log(appointmentList);
-
-  // Fetch appointments on mount if token exists
   useEffect(() => {
     if (adminToken) {
       getAllAppointments();
-      
     }
   }, [adminToken]);
 
-
-
   const handleView = () => {
-
-    // viewing the page  will give appointment who has with 
     toast.warn('Not Available')
-
   }
 
-  const deleteAppointment = async(apppointmentId) => {
+  const deleteAppointment = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(
+        backend_url + '/api/admin/delete-appointment',
+        { appointmentId },
+        { headers: { Authorization: `Bearer ${adminToken}` } }
+      );
 
-    try{
-      // admin will cancel the appointment saving it as history 
-      const {data} = await axios.post(backend_url +  '/api/admin/delete-appointment',{apppointmentId},{headers:{Authorization:`Bearer ${adminToken}`}});
-
-      console.log(data);
-
-      
-
-
-      if(data.success){
+      if (data.success) {
         toast.success('Deleted Successfully');
-
         getAllAppointments();
-        
-      }else{
+      } else {
         toast.error(data.message);
       }
-
-      
-
-
-      
-
-
-
-
-    }catch(error){
-
+    } catch (error) {
       toast.error('Failed')
-      
     }
-
   }
 
-
- 
-
-
-  const len_boolean = appointmentList && appointmentList.length > 0;
-  console.log(len_boolean);
-  console.log(appointmentList)
+  const hasAppointments = appointmentList && appointmentList.length > 0;
 
   return (
-    <div className=" min-h-screen  max-w-[1000px] bg-gradient-to-br from-slate-50 to-indigo-100 py-8 px-0 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-white py-8 px-4 sm:px-8">
+      <div className="max-w-6xl mx-auto">
+
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">All Appointments</h1>
-          <p className="text-gray-600">Manage and view all patient appointments</p>
+          <h1 className="text-3xl font-bold text-black mb-1.5">All Appointments</h1>
+          <p className="text-black/45">
+            {hasAppointments ? `${appointmentList.length} appointment${appointmentList.length !== 1 ? 's' : ''}` : 'Manage and view all patient appointments'}
+          </p>
         </div>
 
-        {len_boolean ? (
-          <div className="bg-white shadow-xl rounded-2xl border border-gray-200 overflow-hidden ">
-            {/* Table Container */}
-            <div className="overflow-x-auto min-w-full">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 w-full">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                      Id
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                      Patient
-                    </th>
-                    <th className="px-2 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                      Age
-                    </th>
-                    <th className="px-4 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                      Date & Time
-                    </th>
-                    <th className="px-2 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                      Doctor
-                    </th>
-                    <th className="px-2 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                      Fees
-                    </th>
-                    <th className="px-10 py-4 text-left  text-xs font-semibold text-white uppercase tracking-wider">
-                      Action
-                    </th>
+        {hasAppointments ? (
+          <div className="border border-black/10 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="border-b border-black/10">
+                    <th className="px-5 py-3.5 text-left text-[11px] font-mono tracking-widest text-black/40 uppercase">Id</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-mono tracking-widest text-black/40 uppercase">Patient</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-mono tracking-widest text-black/40 uppercase">Age</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-mono tracking-widest text-black/40 uppercase">Date & Time</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-mono tracking-widest text-black/40 uppercase">Doctor</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-mono tracking-widest text-black/40 uppercase">Fees</th>
+                    <th className="px-5 py-3.5 text-right text-[11px] font-mono tracking-widest text-black/40 uppercase">Action</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-black/5">
                   {appointmentList.map((appointment, index) => (
-                    <tr key={appointment._id || index} className="hover:bg-indigo-50 transition-colors duration-200">
-                      <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr key={appointment._id || index} className="hover:bg-black/[0.02] transition-colors">
+                      <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-black/70">
                         #{appointment._id?.slice(-6).toUpperCase() || `APT-${index + 1}`}
                       </td>
-                      <td className="px-2 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="ml-1">
-                            <div className="text-sm font-medium text-gray-900">
-                              {appointment.userData.name || 'N/A'}
-                            </div>
-                          </div>
-                        </div>
+                      <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-black">
+                        {appointment.userData?.name || 'N/A'}
                       </td>
-                       <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-600">
-                        {/* {calculateAge(appointment.userData.dob)} */}
-                        </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <div>
-                          <div className="text-indigo-600 font-semibold">
-                            {appointment.slot_date ? appointment.slot_date : 'N/A'}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {appointment.slotTime || 'N/A'}
-                          </div>
-                        </div>
+                      <td className="px-5 py-4 whitespace-nowrap text-sm text-black/55">
+                        {getAge(appointment.userData?.dob)}
                       </td>
-                      <td className="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Dr. {appointment.docData.name || 'N/A'}
+                      <td className="px-5 py-4 whitespace-nowrap text-sm">
+                        <div className="text-black font-medium">{appointment.slot_date || 'N/A'}</div>
+                        <div className="text-black/45">{appointment.slotTime || 'N/A'}</div>
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
-                        ${appointment.docData.fees || 0}
+                      <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-black">
+                        Dr. {appointment.docData?.name || 'N/A'}
                       </td>
-                      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                        <button onClick={() => handleView()} className='cursor-pointer bg-amber-400 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-white transition-all duration-200 transform hover:scale-105'>
+                      <td className="px-5 py-4 whitespace-nowrap text-sm font-semibold text-black">
+                        ${appointment.docData?.fees || 0}
+                      </td>
+                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                        <button
+                          onClick={handleView}
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium border border-black/15 text-black/70 hover:bg-black/5 transition-colors"
+                        >
                           View
                         </button>
-                        <button onClick = {() => deleteAppointment(appointment._id)}className="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs transition-all duration-200 transform hover:scale-105">
+                        <button
+                          onClick={() => deleteAppointment(appointment._id)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-black text-white hover:bg-black/85 transition-colors"
+                        >
                           Delete
                         </button>
                       </td>
@@ -159,17 +125,9 @@ const AllAppointment = () => {
             </div>
           </div>
         ) : (
-          <div className="text-center py-1 bg-white rounded-2xl shadow-xl border border-dashed border-gray-300">
-            <div className="mx-auto h-24 w-20 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full flex items-center justify-center mb-6">
-              <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No appointments found</h3>
-            <p className="text-gray-500 mb-6">Get started by creating your first appointment</p>
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-              + Add Appointment
-            </button>
+          <div className="text-center py-20 border border-dashed border-black/15 rounded-xl">
+            <h3 className="text-lg font-semibold text-black mb-1.5">No appointments found</h3>
+            <p className="text-black/45 mb-6">Appointments will appear here once patients start booking</p>
           </div>
         )}
       </div>

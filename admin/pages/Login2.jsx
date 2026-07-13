@@ -11,12 +11,12 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const { setToken, backend_url } = useContext(AdminContext);
-
+   const navigate = useNavigate();
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     setError('');
     setLoading(true);
-    const navigate = useNavigate();
+   
 
     const endpoint = state === 'Admin' ? '/api/admin/login' : '/api/doctor/login';
     const storageKey = state === 'Admin' ? 'adminToken' : 'doctorToken';
@@ -27,11 +27,16 @@ const Login = () => {
         { email: email.trim(), password },
         { headers: { 'Content-Type': 'application/json' }, timeout: 10000 }
       );
-
+      console.log(data)
+;
       if (data.success) {
         setToken(data.token);
         localStorage.setItem(storageKey, data.token);
-        navigate('/admin-dashboard');
+        if(state === 'Admin'){
+          navigate('/admin-dashboard');
+        }else{
+          navigate('/doctor');
+        }
       } else {
         setError(data.message || 'Invalid credentials. Please try again.');
       }

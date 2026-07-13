@@ -1,11 +1,87 @@
-import React from 'react';
-import { useContext } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { AdminContext } from '../../context/AdminContext';
-import { useEffect } from 'react';
-import { assets } from '../../src/assets/assets';
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  PieChart, 
+  Pie, 
+  Cell 
+} from 'recharts';
+
+// --- Minimalist Icon Set ---
+const CalendarIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </svg>
+);
+const StethoscopeIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M4.8 2.3A.3.3 0 1 0 5.4 2.3.3.3 0 1 0 4.8 2.3M8 2v4a4 4 0 0 1-4 4 4 4 0 0 1-4-4V2M8 22a6 6 0 0 0 6-6v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4" />
+    <circle cx="20" cy="10" r="2" />
+  </svg>
+);
+const UsersIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+const RupeeIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3c3 0 5-1.5 5-5" />
+  </svg>
+);
+
+const STAT_CARDS = [
+  { key: 'appointments', label: 'Total Appointments', icon: CalendarIcon, tint: 'bg-blue-50 text-blue-600 border-blue-100' },
+  { key: 'doctors', label: 'Verified Doctors', icon: StethoscopeIcon, tint: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+  { key: 'patients', label: 'Registered Patients', icon: UsersIcon, tint: 'bg-purple-50 text-purple-600 border-purple-100' },
+  { key: 'amount', label: 'Gross Revenue', icon: RupeeIcon, tint: 'bg-amber-50 text-amber-600 border-amber-100', isCurrency: true },
+];
+
+const StatusBadge = ({ appt }) => {
+  const status = appt.cancelled ? 'Cancelled' : appt.isCompleted ? 'Completed' : 'Pending';
+  const styles = {
+    Cancelled: 'bg-rose-50 text-rose-700 border-rose-100',
+    Completed: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+    Pending: 'bg-amber-50 text-amber-800 border-amber-100',
+  };
+  return (
+    <span className={`px-2.5 py-1 rounded-md text-xs font-bold border ${styles[status]}`}>
+      {status}
+    </span>
+  );
+};
+
+const formatCurrency = (value = 0) => `₹${Number(value).toLocaleString('en-IN')}`;
+
+const DashboardSkeleton = () => (
+  <div className="min-h-screen bg-slate-50/50 p-6 sm:p-8 space-y-8 animate-pulse">
+    <div className="space-y-2">
+      <div className="h-8 w-48 bg-slate-200 rounded-md" />
+      <div className="h-4 w-64 bg-slate-200 rounded-md" />
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="h-24 bg-white border border-slate-100 rounded-xl" />
+      ))}
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 h-80 bg-white border border-slate-100 rounded-xl" />
+      <div className="h-80 bg-white border border-slate-100 rounded-xl" />
+    </div>
+  </div>
+);
 
 const Dashboard = () => {
-  const { adminToken, dashboardData, setDashboardData, getDashboardData } = useContext(AdminContext);
+  const { adminToken, dashboardData, getDashboardData } = useContext(AdminContext);
 
   useEffect(() => {
     if (adminToken) {
@@ -13,160 +89,219 @@ const Dashboard = () => {
     }
   }, [adminToken]);
 
+  // Transform data dynamically for charts based on context response
+  const { statusData, timelineData } = useMemo(() => {
+    if (!dashboardData?.newAppointments) return { statusData: [], timelineData: [] };
 
-  console.log(dashboardData);
+    let completed = 0, cancelled = 0, pending = 0;
+    const dateCounts = {};
+
+    dashboardData.newAppointments.forEach((appt) => {
+      // 1. Calculate Status Aggregations
+      if (appt.cancelled) cancelled++;
+      else if (appt.isCompleted) completed++;
+      else pending++;
+
+      // 2. Format Timeline Matrix (Grouping Volume by Date)
+      const dateKey = appt.slot_date || 'Unknown';
+      dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
+    });
+
+    const timeline = Object.keys(dateCounts).map(date => ({
+      date: date.split('_').join(' ') || date, // Sanitizes date formats if separated by underscores
+      Appointments: dateCounts[date]
+    })).reverse().slice(-7); // Keep recent 7 active structural days
+
+    return {
+      statusData: [
+        { name: 'Completed', value: completed, color: '#10b981' },
+        { name: 'Pending', value: pending, color: '#f59e0b' },
+        { name: 'Cancelled', value: cancelled, color: '#f43f5e' }
+      ],
+      timelineData: timeline
+    };
+  }, [dashboardData]);
+
   if (!dashboardData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
-  
+  const recentAppointments = dashboardData.newAppointments?.slice(0, 5) ?? [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      {/* Header */}
-      <div className="mb-8 flex flex-col items-center justify-between p-10">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-          Admin Dashboard
-        </h1>
-        <p className="text-gray-600 text-lg">Welcome back! Here's what's happening today.</p>
-      </div>
+    <div className="min-h-screen bg-slate-50/50 text-slate-800 antialiased py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200/60 pb-6 gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-950">System Administration Overview</h1>
+            <p className="text-slate-500 text-sm mt-0.5">Real-time control matrix for clinic metadata and scheduling metrics.</p>
+          </div>
+          <div className="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm text-xs font-semibold text-slate-600 self-start md:self-auto">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            Live Sync Operational
+          </div>
+        </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {/* Total Appointments */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-300 group">
-          <div className="flex flex-col items-center justify-between">
+        {/* 4-Column Core Metrics Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          {STAT_CARDS.map(({ key, label, icon: Icon, tint, isCurrency }) => (
+            <div key={key} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase">{label}</span>
+                <h3 className="text-2xl font-black text-slate-950">
+                  {isCurrency ? formatCurrency(dashboardData[key]) : dashboardData[key] ?? 0}
+                </h3>
+              </div>
+              <div className={`w-12 h-12 rounded-xl border flex items-center justify-center shrink-0 ${tint}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Recharts Analytics Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Main Booking Vector Area Chart */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm lg:col-span-2 flex flex-col justify-between">
+            <div className="mb-4">
+              <h4 className="text-sm font-bold text-slate-900">Appointment Velocity Trend</h4>
+              <p className="text-xs text-slate-400">Total volume changes captured across active scheduling slots</p>
+            </div>
+            <div className="w-full h-64 overflow-x-auto overflow-y-hidden">
+              <div className="min-w-[450px] h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={timelineData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorAppts" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15}/>
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '12px' }}
+                    />
+                    <Area type="monotone" dataKey="Appointments" stroke="#3b82f6" strokeWidth={2.5} fillOpacity={1} fill="url(#colorAppts)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {/* Allocation Breakout Donut Chart */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+            <div>
+              <h4 className="text-sm font-bold text-slate-900">Allocation Status Breakdown</h4>
+              <p className="text-xs text-slate-400">Percentage metrics grouped by status</p>
+            </div>
             
-            <div className="flex flex-col items-center sm:ml-3 ml-2">
-              <p className="text-3xl font-bold text-gray-900">{dashboardData.appointments}</p>
-              <p className="text-lg font-medium text-gray-600 mt-1">Appointments</p>
+            <div className="h-44 relative flex items-center justify-center my-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    innerRadius={55}
+                    outerRadius={75}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    {statusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => [`${value} Bookings`, 'Total']} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Custom Interactive Legend Elements */}
+            <div className="grid grid-cols-3 gap-1 border-t border-slate-100 pt-3 text-center">
+              {statusData.map((status) => (
+                <div key={status.name} className="space-y-0.5">
+                  <span className="text-[11px] font-medium text-slate-400 flex items-center justify-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: status.color }} />
+                    {status.name}
+                  </span>
+                  <p className="text-sm font-bold text-slate-800">{status.value}</p>
+                </div>
+              ))}
             </div>
           </div>
+
         </div>
 
-        {/* Doctors */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-300 group">
-          <div className="flex  flex-col items-center">
-           
-            <div className="flex flex-col items-center sm:ml-3 ml-2">
-              <p className="text-3xl font-bold text-gray-900 ml-4">{dashboardData.doctors}</p>
-              <p className="text-xl font-medium text-gray-600 mt-1">Doctors</p>
-            </div>
+        {/* Unified Table Module */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 className="font-bold text-slate-900 text-sm">Recent Activity Matrix</h3>
+            <span className="text-xs font-semibold text-slate-400">Showing last 5 updates</span>
           </div>
-        </div>
 
-        {/* Patients */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-300 group">
-          <div className="flex flex-col items-center justify-between">
-            
-            <div className=" flex flex-col items-center sm:ml-3 ml-2 ">
-              <p className="text-3xl font-bold text-gray-900">{dashboardData.patients}</p>
-              <p className="text-sm font-medium text-gray-600 mt-1">Patients</p>
+          {recentAppointments.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <CalendarIcon className="w-8 h-8 text-slate-300 mb-2" />
+              <p className="text-slate-500 text-xs font-semibold">No appointments found</p>
             </div>
-          </div>
-        </div>
+          ) : (
+            <>
+              {/* Desktop Roster Layout */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-slate-50/70 border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold">
+                      <th className="py-3 px-5">Patient Name</th>
+                      <th className="py-3 px-5">Assigned Practitioner</th>
+                      <th className="py-3 px-5">Slot Windows</th>
+                      <th className="py-3 px-5 text-right">Processing Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+                    {recentAppointments.map((appt, idx) => (
+                      <tr key={appt._id || idx} className="hover:bg-slate-50/40 transition-colors">
+                        <td className="py-3.5 px-5 text-slate-950 font-bold">{appt.userData?.name || 'N/A'}</td>
+                        <td className="py-3.5 px-5 text-slate-600">{appt.docData?.name || 'N/A'}</td>
+                        <td className="py-3.5 px-5 text-slate-500">
+                          <span>{appt.slot_date}</span>
+                          <span className="mx-1.5 text-slate-300">•</span>
+                          <span className="font-mono text-slate-400">{appt.slotTime}</span>
+                        </td>
+                        <td className="py-3.5 px-5 text-right">
+                          <StatusBadge appt={appt} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-        {/* Revenue */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-300 group">
-          <div className="flex flex-col items-center justify-between">
-            
-            <div className=" flex flex-col items-center sm:ml-3 ml-2 ">
-              <p className="text-3xl font-bold text-gray-900">₹{dashboardData.amount || 0}</p>
-              <p className="text-sm font-medium text-gray-600 mt-1">Revenue</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Appointments */}
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8  ">
-        {/* Appointments Table */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50 hidden md:block ">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <svg className="w-8 h-8 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-            </svg>
-            Recent Appointments
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-4 font-semibold text-gray-700">Patient</th>
-                  <th className="text-left py-4 font-semibold text-gray-700">Doctor</th>
-                  <th className="text-left py-4 font-semibold text-gray-700">Date & Time</th>
-                  <th className="text-left py-4 font-semibold text-gray-700">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboardData.newAppointments?.slice(0, 5).map((appt, idx) => (
-                  <tr key={appt._id || idx} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-4">
-                      <div className="flex items-center px-1">
-                       
-                        <span className="font-medium text-gray-900">{appt.userData?.name || 'N/A'}</span>
+              {/* Mobile Card Layout */}
+              <div className="md:hidden divide-y divide-slate-100 text-xs">
+                {recentAppointments.map((appt, idx) => (
+                  <div key={appt._id || idx} className="p-4 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-0.5">
+                        <p className="font-bold text-slate-950 text-sm">{appt.userData?.name || 'N/A'}</p>
+                        <p className="text-slate-400">Doctor: <span className="text-slate-600 font-semibold">{appt.docData?.name || 'N/A'}</span></p>
                       </div>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex items-center px-2">
-                        
-                        <span className="font-medium text-gray-900">{appt.docData?.name || 'N/A'}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 text-gray-700">
-                      <div className='px-4  flex flex-col items-center'>
-                        <p className="font-medium">{appt.slot_date}</p>
-                        <p className="text-sm text-gray-500">{appt.slotTime}</p>
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        appt.cancelled 
-                          ? 'bg-red-100 text-red-800' 
-                          : appt.isCompleted 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {appt.cancelled ? 'Cancelled' : appt.isCompleted ? 'Completed' : 'Pending'}
-                      </span>
-                    </td>
-                  </tr>
+                      <StatusBadge appt={appt} />
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <span>{appt.slot_date}</span>
+                      <span>•</span>
+                      <span className="font-mono">{appt.slotTime}</span>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
-          {dashboardData.newAppointments?.length > 5 && (
-            <p className="text-center text-gray-500 mt-4 text-sm">Showing 5 of {dashboardData.newAppointments.length} appointments</p>
+              </div>
+            </>
           )}
         </div>
 
-        {/* Quick Stats */}
-        <div className="space-y-6">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Today's Overview</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
-                <span className="text-gray-700">Total Appointments</span>
-                <span className="text-2xl font-bold text-blue-600">{dashboardData.appointments}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl">
-                <span className="text-gray-700">Active Doctors</span>
-                <span className="text-2xl font-bold text-green-600">{dashboardData.doctors}</span>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl">
-                <span className="text-gray-700">Registered Patients</span>
-                <span className="text-2xl font-bold text-purple-600">{dashboardData.patients}</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

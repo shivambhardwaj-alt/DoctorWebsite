@@ -77,7 +77,7 @@ const App = () => {
             {doctorToken && (
               <>
 
-                <Route path = '/' element  = {<DoctorHome />} />
+                <Route path = '/doctor' element  = {<DoctorHome />} />
                 <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
                 <Route path="/doctor-appointment" element={<DoctorAppointment />} />
                 <Route path="/doctor-profile" element={<DoctorProfile />} />

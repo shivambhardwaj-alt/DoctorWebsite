@@ -4,263 +4,97 @@ import { NavLink } from 'react-router-dom';
 import { assets } from '../src/assets/assets.js';
 import { DoctorContext } from '../context/DoctorContext.jsx';
 
+const navLinkClass = ({ isActive }) =>
+  `group relative flex items-center gap-3 px-3 lg:px-4 py-2.5 rounded-lg font-medium text-sm
+   transition-all duration-200
+   ${isActive
+      ? 'bg-black text-white shadow-[0_4px_14px_-4px_rgba(0,0,0,0.35)]'
+      : 'text-black/60 hover:bg-black/5 hover:text-black'}`;
+
+const NavItem = ({ to, icon, label }) => (
+  <NavLink to={to} className={navLinkClass}>
+    {({ isActive }) => (
+      <>
+        {/* active tick */}
+        <span
+          className={`absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[3px] rounded-full transition-all duration-200
+            ${isActive ? 'bg-white' : 'bg-transparent'}`}
+        />
+        <img
+          src={icon}
+          alt=""
+          className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110
+            ${isActive ? 'brightness-0 invert' : 'opacity-60 grayscale'}`}
+        />
+        <span className="hidden lg:block whitespace-nowrap tracking-wide">
+          {label}
+        </span>
+
+        {/* tooltip for collapsed (icon-only) rail on smaller screens */}
+        <span
+          className="lg:hidden pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 rounded-md
+            bg-black text-white text-xs font-chart-mono whitespace-nowrap opacity-0
+            group-hover:opacity-100 transition-opacity duration-150 z-50"
+        >
+          {label}
+        </span>
+      </>
+    )}
+  </NavLink>
+);
+
 const Sidebar = () => {
   const { adminToken } = useContext(AdminContext);
   const { doctorToken } = useContext(DoctorContext);
-  
+
   return (
-    <div className="h-screen bg-gradient-to-b from-emerald-500 to-teal-600 border-r border-white/20 shadow-xl fixed top-20 left-0 z-50 overflow-hidden
-      max-w-3xs 
-      transition-all duration-300 ease-in-out">
-      <div className="h-full p-2 sm:p-4 lg:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-300 scrollbar-track-emerald-700/50">
-        
+    <aside
+      className="h-screen bg-white border-r border-black/10 fixed top-20 left-0 z-40
+        w-16 lg:w-60 transition-all duration-300 ease-in-out
+        shadow-[1px_0_0_rgba(0,0,0,0.04),8px_0_24px_-16px_rgba(0,0,0,0.15)]"
+    >
+      <div className="h-full flex flex-col px-2 lg:px-4 py-6 overflow-y-auto overflow-x-hidden
+        scrollbar-thin scrollbar-thumb-black/15 scrollbar-track-transparent">
+
         {/* Admin Sidebar */}
         {adminToken && (
-
-
-
-
-
-
-
-
-
-
-          <ul className="space-y-2">
-             
-
-
-
-
-
-
-            <NavLink
-              to="/admin-dashboard"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.home_icon} 
-                alt="Dashboard" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                DASHBOARD
-              </p>
-            </NavLink>
-
-            <NavLink
-              to="/all-appointments"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.appointment_icon} 
-                alt="Appointments" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                APPOINTMENTS
-              </p>
-            </NavLink>
-
-            <NavLink
-              to="/add-doctor"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.add_icon} 
-                alt="Add Doctor" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                ADD DOCTOR
-              </p>
-            </NavLink>
-
-            <NavLink
-              to="/doctor-list"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.people_icon} 
-                alt="Doctors" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                DOCTORS LIST
-              </p>
-            </NavLink>
-
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
-          </ul>
+          <div className="space-y-1">
+            <p className="hidden lg:block font-chart-mono text-[10px] tracking-[0.25em]
+              text-black/40 uppercase px-4 mb-3">
+              Admin
+            </p>
+            <ul className="space-y-1">
+              <NavItem to="/admin-dashboard" icon={assets.home_icon} label="Dashboard" />
+              <NavItem to="/all-appointments" icon={assets.appointment_icon} label="Appointments" />
+              <NavItem to="/add-doctor" icon={assets.add_icon} label="Add Doctor" />
+              <NavItem to="/doctor-list" icon={assets.people_icon} label="Doctors List" />
+            </ul>
+          </div>
         )}
 
         {/* Doctor Sidebar */}
         {doctorToken && (
-          <div className="space-y-2 mt-4 lg:mt-0">
+          <div className="space-y-1">
+            <p className="hidden lg:block font-chart-mono text-[10px] tracking-[0.25em]
+              text-black/40 uppercase px-4 mb-3">
+              Doctor
+            </p>
+            <ul className="space-y-1">
+              <NavItem to="/doctor-dashboard" icon={assets.home_icon} label="Dashboard" />
+              <NavItem to="/doctor-appointment" icon={assets.appointment_icon} label="Appointments" />
+              <NavItem to="/doctor-profile" icon={assets.doctor_icon} label="Profile" />
+              <NavItem to="/today-appointment" icon={assets.list_icon} label="Today" />
+            </ul>
 
+            <div className="my-3 border-t border-black/10" />
 
-
-
-            
-            <NavLink
-              to="/doctor-dashboard"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.home_icon} 
-                alt="Dashboard" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                DASHBOARD
-              </p>
-            </NavLink>
-
-            <NavLink
-              to="/doctor-appointment"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.appointment_icon} 
-                alt="Appointments" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                APPOINTMENTS
-              </p>
-            </NavLink>
-
-            <NavLink
-              to="/doctor-profile"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.doctor_icon} 
-                alt="Profile" 
-                className="w-5 h-5 sm:w-6 sm:h-6 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                PROFILE
-              </p>
-            </NavLink>
-
-
-
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.cancel_icon} 
-                alt="Dashboard" 
-                className="w-5 h-5 sm:w-8 sm:h-8 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                CANCELLED
-              </p>
-            </NavLink>
-
-
-
-
-            <NavLink
-              to="/today-appointment"
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 sm:p-3 lg:p-3 rounded-lg text-white/90 font-medium transition-all duration-200 border-l-3 group ${
-                  isActive 
-                    ? 'bg-white/30 border-emerald-200 scale-105 shadow-md' 
-                    : 'border-transparent hover:bg-white/20 hover:scale-105 hover:border-emerald-100'
-                }`
-              }
-            >
-              <img 
-                src={assets.list_icon} 
-                alt="Dashboard" 
-                className="w-5 h-5 sm:w-8 sm:h-8 brightness-0 invert transition-transform group-hover:scale-110 flex-shrink-0" 
-              />
-              <p className="group-hover:translate-x-1 transition-transform whitespace-nowrap hidden sm:hidden md:hidden lg:block">
-                TODAY
-              </p>
-            </NavLink>
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
+            <ul>
+              <NavItem to="/" icon={assets.cancel_icon} label="Cancelled" />
+            </ul>
           </div>
         )}
       </div>
-    </div> 
+    </aside>
   );
 };
 
