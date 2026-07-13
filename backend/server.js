@@ -26,6 +26,10 @@ const startSever = async() => {
     app.use('/api/admin',adminRouter);
     app.use('/api/doctor',doctorRouter);
 
+    app.get("/health" , (req, res) => {
+      return res.json("Working fine");
+    })
+
 
     app.listen(port,() => {
      console.log(`Server is running on ${port}`); 
