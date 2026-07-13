@@ -87,7 +87,7 @@ const Appointment = () => {
         cursor.setMinutes(cursor.getMinutes() + SLOT_INTERVAL_MIN)
       }
 
-      if (slots.length > 0) days.push(slots) // skip days with no valid slots left
+      if (slots.length > 0) days.push(slots) 
     }
 
     setDocSlots(days)

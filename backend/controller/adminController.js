@@ -18,7 +18,7 @@ const addDoctor = async (req, res) => {
       about,
       fees,
       address,
-      available, //  NEW
+      available,
     } = req.body
 
     const imageFile = req.file
@@ -81,6 +81,7 @@ const addDoctor = async (req, res) => {
       resource_type: 'image',
       folder: 'doctors',
     })
+    console.log("Validation is succesfull here");
 
     // ---------- BOOLEAN HANDLING ----------
     const isAvailable =
@@ -102,6 +103,7 @@ const addDoctor = async (req, res) => {
       date: Date.now(),
     })
 
+      console.log("Model is created for the doctor to save into the database");
     await newDoctor.save()
 
     return res.json({
