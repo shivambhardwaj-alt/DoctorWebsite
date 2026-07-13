@@ -118,7 +118,12 @@ const Appointment = () => {
       setIsBooking(true)
       const { data } = await axios.post(
         `${backend_url}/api/user/book-appointment`,
-        { slot_date, slotTime, doc_id: docInfo._id },
+        {
+          slot_date,
+          slotTime,
+          doc_id: docInfo._id,
+          amount: docInfo.fees, 
+        },
         { headers: { Authorization: `Bearer ${userToken}` } }
       )
 
@@ -179,7 +184,7 @@ const Appointment = () => {
 
       <div className="max-w-4xl mx-auto relative">
 
-        {/* Doctor card */}
+  
         <div className="bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)] p-6 mb-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
             <div className="flex flex-col items-center lg:order-2">
@@ -227,12 +232,12 @@ const Appointment = () => {
           </div>
         </div>
 
-        {/* Calendar */}
+
         <div className="bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)] p-6">
           <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#9A968C] uppercase mb-1">Schedule</p>
           <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-5">Choose a day and time</h2>
 
-          {/* Day strip */}
+   
           <div className="flex gap-2 overflow-x-auto pb-2 mb-5 -mx-1 px-1">
             {docSlots.map((slots, i) => {
               const date = slots[0].datetime
@@ -260,7 +265,6 @@ const Appointment = () => {
             })}
           </div>
 
-          {/* Slot grid for the selected day */}
           {selectedDay && (
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
               {selectedDay.map((slot, idx) => {
@@ -297,7 +301,7 @@ const Appointment = () => {
         </div>
       </div>
 
-      {/* Confirm modal */}
+
       {showConfirmModal && selectedDay && (
         <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-md max-w-sm w-full shadow-2xl border-t-4 font-chart-sans" style={{ borderTopColor: '#0F6E56' }}>
