@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 
 const MyAppointment = () => {
@@ -26,7 +26,7 @@ const MyAppointment = () => {
           }
         }
       );
-      setAppointments(data.appointments.reverse());
+      setAppointments([...data.appointments].reverse());
     }
   }
 
@@ -115,26 +115,26 @@ const MyAppointment = () => {
     }
   }
 
-  const cancelAppointment = async(appointmentId) => {
+  const cancelAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(
         backend_url + '/api/user/cancelAppointment',
         { appointmentId: appointmentId },
         {
           headers: {
-            Authorization: `Bearer ${userToken}`  
+            Authorization: `Bearer ${userToken}`
           }
         }
       );
 
-      if(data.success){
+      if (data.success) {
         toast.success('Cancelled Successfully');
         setShowCancelModal(false);
         getAppointmentList()
-      }else{
+      } else {
         toast.error('Unable to Cancel');
       }
-    }catch(error){
+    } catch (error) {
       toast.error('Unable to Cancel')
     }
   }
@@ -153,7 +153,7 @@ const MyAppointment = () => {
   const cancelledCount = appointments.filter(item => item.cancelled).length;
 
   return (
-    <div className="min-h-screen bg-white py-10 sm:py-14 px-4 font-chart-sans relative overflow-hidden">
+    <div className="min-h-screen bg-white py-6 sm:py-10 lg:py-14 px-3 sm:px-4 font-chart-sans relative overflow-hidden">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
         .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
@@ -171,115 +171,115 @@ const MyAppointment = () => {
 
       <div className="max-w-4xl mx-auto relative">
 
-        <header className="mb-8 sm:mb-10 border-b-2 border-[#14213D] pb-4 sm:pb-5">
-          <p className="font-chart-mono text-[11px] tracking-[0.25em] text-[#0F6E56] uppercase mb-2">
+        <header className="mb-6 sm:mb-8 lg:mb-10 border-b-2 border-[#14213D] pb-3 sm:pb-4 lg:pb-5">
+          <p className="font-chart-mono text-[10px] sm:text-[11px] tracking-[0.2em] sm:tracking-[0.25em] text-[#0F6E56] uppercase mb-1.5 sm:mb-2">
             Appointment Log
           </p>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-            <h1 className="font-chart-serif text-3xl sm:text-4xl font-semibold text-[#14213D] tracking-tight">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-3">
+            <h1 className="font-chart-serif text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#14213D] tracking-tight">
               My appointments
             </h1>
-            <div className="flex gap-4 font-chart-mono text-xs text-[#6B6458]">
+            <div className="flex gap-3 sm:gap-4 font-chart-mono text-[11px] sm:text-xs text-[#6B6458]">
               <span><span className="text-[#14213D] font-semibold">{upcomingCount}</span> upcoming</span>
               <span><span className="text-[#C1493A] font-semibold">{cancelledCount}</span> cancelled</span>
             </div>
           </div>
         </header>
 
-        <div className="flex items-start gap-3 bg-[#0F6E56]/6 border border-[#0F6E56]/15 rounded-sm px-4 py-3 mb-8">
-          <img src={assets.calendar} alt="" className="w-4 mt-0.5" />
+        <div className="flex items-start gap-2.5 sm:gap-3 bg-[#0F6E56]/6 border border-[#0F6E56]/15 rounded-sm px-3 sm:px-4 py-2.5 sm:py-3 mb-6 sm:mb-8">
+          <img src={assets.calendar} alt="" className="w-3.5 sm:w-4 mt-0.5 flex-shrink-0" />
           <p className="text-xs sm:text-sm text-[#14213D] leading-relaxed">
             Arrive 15 minutes early with a valid ID and any prescription documents. Cancellations require 24-hour notice.
           </p>
         </div>
 
-        <div className="space-y-4 mb-4">
+        <div className="space-y-3 sm:space-y-4 mb-4">
           {appointments.map((item, index) => {
             const fee = getFee(item);
             return (
-            <div
-              key={index}
-              className="relative bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)]
-                hover:shadow-[0_10px_24px_-10px_rgba(20,33,61,0.16)] transition-shadow duration-200 pl-6 pr-5 py-5"
-            >
-              <div className="absolute left-2 top-0 bottom-0 border-l border-dashed border-[#14213D]/15 hidden sm:block" />
-              <div className="absolute left-2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-[#14213D]/20 hidden sm:block" />
+              <div
+                key={index}
+                className="relative bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)]
+                hover:shadow-[0_10px_24px_-10px_rgba(20,33,61,0.16)] transition-shadow duration-200 pl-4 sm:pl-6 pr-4 sm:pr-5 py-4 sm:py-5"
+              >
+                <div className="absolute left-2 top-0 bottom-0 border-l border-dashed border-[#14213D]/15 hidden sm:block" />
+                <div className="absolute left-2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-[#14213D]/20 hidden sm:block" />
 
-              <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-4 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-3 sm:gap-4 items-start lg:items-center">
 
-                <div className="flex items-center gap-4 lg:contents">
-                  <img
-                    src={item.docData.image}
-                    alt={item.docData.name}
-                    className="w-16 h-16 rounded-sm object-cover border border-[#14213D]/10 flex-shrink-0"
-                  />
+                  <div className="flex items-center gap-3 sm:gap-4 lg:contents">
+                    <img
+                      src={item.docData.image}
+                      alt={item.docData.name}
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-sm object-cover border border-[#14213D]/10 flex-shrink-0"
+                    />
 
-                  <div className="min-w-0 lg:hidden">
-                    <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] truncate"> {item.docData.name}</h3>
-                    <span className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#0F6E56]">{item.docData.speciality}</span>
+                    <div className="min-w-0 lg:hidden">
+                      <h3 className="font-chart-serif text-base sm:text-lg font-semibold text-[#14213D] truncate">{item.docData.name}</h3>
+                      <span className="font-chart-mono text-[9px] sm:text-[10px] tracking-[0.1em] uppercase text-[#0F6E56]">{item.docData.speciality}</span>
+                    </div>
                   </div>
+
+                  <div className="min-w-0 space-y-1 sm:space-y-1.5">
+                    <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] hidden lg:block">{item.docData.name}</h3>
+                    <span className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#0F6E56] hidden lg:inline-block">{item.docData.speciality}</span>
+                    <p className="text-xs sm:text-sm text-[#4A4438]">
+                      {item.slot_date} &middot; <span className="font-medium">{item.slotTime}</span>
+                    </p>
+                    <p className="text-[11px] sm:text-xs text-[#9A968C] break-words">
+                      {item.docData.address.line1}, {item.docData.address.line2}
+                    </p>
+                    <p className="font-chart-mono text-[9px] sm:text-[10px] tracking-[0.1em] uppercase text-[#6B6458]">
+                      {item.cancelled ? 'Cancelled' : 'Upcoming'} &middot; Fee {fee != null ? `${currency_symbol}${fee}` : 'N/A'}
+                    </p>
+                  </div>
+
+                  {!item.cancelled ? (
+                    <div className="flex flex-row sm:flex-row lg:flex-col gap-2 w-full lg:w-36">
+                      <button
+                        onClick={() => handlePayClick(item)}
+                        className="flex-1 lg:flex-none px-4 py-2 bg-[#14213D] text-white font-semibold text-xs rounded-sm hover:bg-[#0F6E56] transition-colors duration-200"
+                      >
+                        Pay now
+                      </button>
+                      <button
+                        onClick={() => handleCancelClick(item)}
+                        className="flex-1 lg:flex-none px-4 py-2 border border-[#14213D]/20 text-[#14213D] font-medium text-xs rounded-sm hover:bg-[#14213D]/5 transition-colors duration-200"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="lg:w-36 flex justify-start lg:justify-end">
+                      <span className="px-3 py-1.5 bg-[#C1493A]/8 text-[#C1493A] font-chart-mono text-[10px] tracking-[0.1em] uppercase rounded-sm border border-[#C1493A]/15">
+                        Cancelled
+                      </span>
+                    </div>
+                  )}
                 </div>
-
-                <div className="min-w-0 space-y-1.5">
-                  <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] hidden lg:block"> {item.docData.name}</h3>
-                  <span className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#0F6E56] hidden lg:inline-block">{item.docData.speciality}</span>
-                  <p className="text-sm text-[#4A4438]">
-                    {item.slot_date} &middot; <span className="font-medium">{item.slotTime}</span>
-                  </p>
-                  <p className="text-xs text-[#9A968C] truncate">
-                    {item.docData.address.line1}, {item.docData.address.line2}
-                  </p>
-                  <p className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#6B6458]">
-                    {item.cancelled ? 'Cancelled' : 'Upcoming'} &middot; Fee {fee != null ? `${currency_symbol}${fee}` : 'N/A'}
-                  </p>
-                </div>
-
-                {!item.cancelled ? (
-                  <div className="flex sm:flex-col gap-2 lg:w-36">
-                    <button
-                      onClick={() => handlePayClick(item)}
-                      className="flex-1 lg:flex-none px-4 py-2 bg-[#14213D] text-white font-semibold text-xs rounded-sm hover:bg-[#0F6E56] transition-colors duration-200"
-                    >
-                      Pay now
-                    </button>
-                    <button
-                      onClick={() => handleCancelClick(item)}
-                      className="flex-1 lg:flex-none px-4 py-2 border border-[#14213D]/20 text-[#14213D] font-medium text-xs rounded-sm hover:bg-[#14213D]/5 transition-colors duration-200"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="lg:w-36 flex sm:justify-end">
-                    <span className="px-3 py-1.5 bg-[#C1493A]/8 text-[#C1493A] font-chart-mono text-[10px] tracking-[0.1em] uppercase rounded-sm border border-[#C1493A]/15">
-                      Cancelled
-                    </span>
-                  </div>
-                )}
               </div>
-            </div>
             );
           })}
         </div>
 
         {appointments.length === 0 && (
-          <div className="text-center py-16 sm:py-20 bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)]">
-            <p className="font-chart-mono text-[11px] tracking-[0.2em] text-[#0F6E56] uppercase mb-2">Empty log</p>
-            <h3 className="font-chart-serif text-2xl font-semibold text-[#14213D] mb-3">No appointments yet</h3>
-            <p className="text-sm text-[#6B6458] mb-7 max-w-sm mx-auto">
+          <div className="text-center py-12 sm:py-16 lg:py-20 px-4 bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)]">
+            <p className="font-chart-mono text-[10px] sm:text-[11px] tracking-[0.2em] text-[#0F6E56] uppercase mb-2">Empty log</p>
+            <h3 className="font-chart-serif text-xl sm:text-2xl font-semibold text-[#14213D] mb-3">No appointments yet</h3>
+            <p className="text-sm text-[#6B6458] mb-6 sm:mb-7 max-w-sm mx-auto">
               You haven't booked any appointments. Start your healthcare journey with our expert doctors.
             </p>
             <button
               onClick={() => navigate('/doctors')}
-              className="px-8 py-3 bg-[#14213D] text-white font-semibold text-sm rounded-sm hover:bg-[#0F6E56] transition-colors duration-200"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#14213D] text-white font-semibold text-sm rounded-sm hover:bg-[#0F6E56] transition-colors duration-200"
             >
               Book your first appointment
             </button>
           </div>
         )}
 
-        <div className="text-center pt-10 mt-8 border-t border-[#14213D]/10">
-          <p className="text-xs text-[#6B6458]">
+        <div className="text-center pt-8 sm:pt-10 mt-6 sm:mt-8 border-t border-[#14213D]/10">
+          <p className="text-xs text-[#6B6458] break-words px-2">
             Need help? Contact <span className="font-medium text-[#0F6E56]">support@healthcare.com</span>
           </p>
         </div>
@@ -287,21 +287,21 @@ const MyAppointment = () => {
 
       {showCancelModal && selectedAppointment && (
         <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-md max-w-sm w-full shadow-2xl border-t-4" style={{ borderTopColor: '#C1493A' }}>
-            <div className="p-6">
+          <div className="bg-white rounded-md w-full max-w-sm shadow-2xl border-t-4" style={{ borderTopColor: '#C1493A' }}>
+            <div className="p-5 sm:p-6">
               <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#C1493A] uppercase mb-1">Confirm cancellation</p>
-              <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-4">Cancel this appointment?</h2>
+              <h2 className="font-chart-serif text-lg sm:text-xl font-semibold text-[#14213D] mb-4">Cancel this appointment?</h2>
 
               <div className="bg-[#FAFAF7] border border-[#14213D]/8 rounded-sm px-4 py-3 mb-4">
-                <p className="font-semibold text-sm text-[#14213D]"> {selectedAppointment.docData.name}</p>
+                <p className="font-semibold text-sm text-[#14213D]">{selectedAppointment.docData.name}</p>
                 <p className="text-xs text-[#6B6458] mt-0.5">{selectedAppointment.slot_date} at {selectedAppointment.slotTime}</p>
               </div>
 
-              <p className="text-xs text-[#6B6458] mb-6">
+              <p className="text-xs text-[#6B6458] mb-5 sm:mb-6">
                 This can't be undone. Please cancel at least 24 hours before your appointment.
               </p>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                 <button
                   onClick={() => setShowCancelModal(false)}
                   className="flex-1 py-2.5 border border-[#14213D]/20 text-[#14213D] font-medium text-sm rounded-sm hover:bg-[#14213D]/5 transition-colors"
@@ -322,23 +322,23 @@ const MyAppointment = () => {
 
       {showPayModal && selectedAppointment && (
         <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-md max-w-sm w-full shadow-2xl border-t-4" style={{ borderTopColor: '#0F6E56' }}>
-            <div className="p-6">
+          <div className="bg-white rounded-md w-full max-w-sm shadow-2xl border-t-4" style={{ borderTopColor: '#0F6E56' }}>
+            <div className="p-5 sm:p-6">
               <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#0F6E56] uppercase mb-1">Confirm payment</p>
-              <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-4">Pay consultation fee</h2>
+              <h2 className="font-chart-serif text-lg sm:text-xl font-semibold text-[#14213D] mb-4">Pay consultation fee</h2>
 
               <div className="bg-[#FAFAF7] border border-[#14213D]/8 rounded-sm px-4 py-3 mb-4">
-                <p className="font-semibold text-sm text-[#14213D]"> {selectedAppointment.docData.name}</p>
+                <p className="font-semibold text-sm text-[#14213D]">{selectedAppointment.docData.name}</p>
                 <p className="text-xs text-[#6B6458] mt-0.5 mb-3">{selectedAppointment.slot_date} at {selectedAppointment.slotTime}</p>
                 <div className="flex items-baseline gap-2 border-t border-[#14213D]/8 pt-3">
-                  <span className="font-chart-serif text-2xl font-semibold text-[#14213D]">
+                  <span className="font-chart-serif text-xl sm:text-2xl font-semibold text-[#14213D]">
                     {(() => { const fee = getFee(selectedAppointment); return fee != null ? `${currency_symbol}${fee}` : 'N/A'; })()}
                   </span>
                   <span className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#9A968C]">Consultation fee</span>
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                 <button
                   onClick={() => setShowPayModal(false)}
                   className="flex-1 py-2.5 border border-[#14213D]/20 text-[#14213D] font-medium text-sm rounded-sm hover:bg-[#14213D]/5 transition-colors"

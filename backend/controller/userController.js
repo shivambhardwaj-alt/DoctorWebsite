@@ -403,7 +403,8 @@ const deleteAppointment  = async(req,res) => {
 
 
 const paymentRazorpay = async (req, res) => {
-  try {
+  console.log("Request came here for the transaction")
+;  try {
     const { appointmentId } = req.body;
 
     const appointmentData = await appointmentModel.findById(appointmentId);

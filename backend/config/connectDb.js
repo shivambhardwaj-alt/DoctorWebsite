@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 const connectDb = async () => {
     try {
-        console.log("MONGODB URL:", process.env.MONGODB);
+      
 
         if (!process.env.MONGODB) {
             throw new Error("MONGODB URI is missing");

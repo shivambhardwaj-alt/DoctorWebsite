@@ -1,56 +1,78 @@
-import React, { useState, useContext  } from 'react';
+import React, { useState, useContext } from 'react';
 import { AdminContext } from '../context/AdminContext';
+import { DoctorContext } from '../context/DoctorContext';
 import axios from 'axios';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [state, setState] = useState('Admin'); // 'Admin' | 'Doctor'
+  const [state, setState] = useState('Admin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [token,setToken] = useState(null);
 
-  const { setToken, backend_url } = useContext(AdminContext);
-   const navigate = useNavigate();
+  const adminCtx = useContext(AdminContext);
+  const doctorCtx = useContext(DoctorContext);
+  const navigate = useNavigate();
+
+  const backend_url = adminCtx?.backend_url;
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     setError('');
     setLoading(true);
-   
-
-    const endpoint = state === 'Admin' ? '/api/admin/login' : '/api/doctor/login';
-    const storageKey = state === 'Admin' ? 'adminToken' : 'doctorToken';
 
     try {
+      const endpoint = state === 'Admin' ? '/api/admin/login' : '/api/doctor/login';
+      const storageKey = state === 'Admin' ? 'adminToken' : 'doctorToken';
+
       const { data } = await axios.post(
         `${backend_url}${endpoint}`,
         { email: email.trim(), password },
-        { headers: { 'Content-Type': 'application/json' }, timeout: 10000 }
+        { headers: { 'Content-Type': 'application/json' } }
       );
-      console.log(data)
-;
-      if (data.success) {
-        setToken(data.token);
-        localStorage.setItem(storageKey, data.token);
-        if(state === 'Admin'){
-          navigate('/admin-dashboard');
-        }else{
-          navigate('/doctor');
+
+      const token =
+        state === 'Admin'
+          ? data?.adminToken || data?.token
+          : data?.doctorToken || data?.token;
+
+      if (!data?.success) {
+        setError(data?.message || 'Invalid credentials. Please try again.');
+        return;
+      }
+
+      if (!token) {
+        setError(`Login successful but token missing for ${state}.`);
+        return;
+      }
+
+      localStorage.setItem(storageKey, token);
+
+      if (state === 'Admin') {
+        if (typeof adminCtx?.setAdminToken === 'function') {
+          adminCtx.setAdminToken(token);
         }
+        navigate('/admin-dashboard', { replace: true });
       } else {
-        setError(data.message || 'Invalid credentials. Please try again.');
+        if (typeof doctorCtx?.setDoctorToken === 'function') {
+          doctorCtx.setDoctorToken(token);
+        } else {
+          setError('DoctorContext setToken is not available. Check your DoctorContext provider.');
+          return;
+        }
+        navigate('/doctor-dashboard', { replace: true });
       }
     } catch (err) {
-      if (err.code === 'ECONNABORTED') {
-        setError('Request timed out. Check that the server is running.');
-      } else if (err.response?.status === 404) {
-        setError('Login endpoint not found. Check the server configuration.');
-      } else if (err.response?.status === 401 || err.response?.status === 400) {
+      if (err.response?.status === 401 || err.response?.status === 400) {
         setError(err.response?.data?.message || 'Invalid email or password.');
+      } else if (err.response?.status === 404) {
+        setError('Login endpoint not found.');
       } else if (err.response?.status === 500) {
-        setError('Server error. Please try again shortly.');
+        setError('Server error. Please try again later.');
       } else {
-        setError(err.response?.data?.message || 'Login failed. Please try again.');
+        setError(err.response?.data?.message || err.message || 'Login failed.');
       }
     } finally {
       setLoading(false);
@@ -93,7 +115,6 @@ const Login = () => {
         }
       `}</style>
 
-
       <div className="absolute inset-0 chart-grid pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-[#FAFAF7] pointer-events-none" />
 
@@ -102,13 +123,9 @@ const Login = () => {
           Staff Access
         </p>
 
-       
         <div className="relative bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.04),0_16px_40px_-12px_rgba(20,33,61,0.14)] pt-8 pb-8 px-8">
-
-   
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-6 bg-white rounded-b-full border-x border-b border-[#14213D]/10" />
 
-       
           <svg viewBox="0 0 300 40" className="w-full h-8 mb-5" preserveAspectRatio="none">
             <path
               className="pulse-path"
@@ -121,7 +138,6 @@ const Login = () => {
             />
           </svg>
 
-          {/* Role toggle, styled like filing tabs */}
           <div className="flex border-b border-[#14213D]/10 mb-6">
             {['Admin', 'Doctor'].map((role) => (
               <button
@@ -134,11 +150,7 @@ const Login = () => {
                   setError('');
                 }}
                 disabled={loading}
-                className={`flex-1 pb-3 text-sm font-medium tracking-wide transition-colors border-b-2 -mb-px
-                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F6E56] disabled:opacity-50
-                  ${state === role
-                    ? 'text-[#14213D] border-[#0F6E56]'
-                    : 'text-[#9A968C] border-transparent hover:text-[#14213D]'}`}
+                className={`flex-1 pb-3 text-sm font-medium tracking-wide transition-colors border-b-2 -mb-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F6E56] disabled:opacity-50 ${state === role ? 'text-[#14213D] border-[#0F6E56]' : 'text-[#9A968C] border-transparent hover:text-[#14213D]'}`}
               >
                 {role}
               </button>
@@ -166,9 +178,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
-                className="w-full px-3.5 py-2.5 bg-white border border-[#14213D]/15 rounded-sm text-sm text-[#14213D]
-                  placeholder-[#9A968C]/70 focus:outline-none focus:ring-2 focus:ring-[#0F6E56]/25 focus:border-[#0F6E56]
-                  transition-colors disabled:opacity-50"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#14213D]/15 rounded-sm text-sm text-[#14213D] placeholder-[#9A968C]/70 focus:outline-none focus:ring-2 focus:ring-[#0F6E56]/25 focus:border-[#0F6E56] transition-colors disabled:opacity-50"
                 placeholder={state === 'Admin' ? 'admin@hospital.com' : 'doctor@hospital.com'}
               />
             </div>
@@ -186,9 +196,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
-                className="w-full px-3.5 py-2.5 bg-white border border-[#14213D]/15 rounded-sm text-sm text-[#14213D]
-                  placeholder-[#9A968C]/70 focus:outline-none focus:ring-2 focus:ring-[#0F6E56]/25 focus:border-[#0F6E56]
-                  transition-colors disabled:opacity-50"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#14213D]/15 rounded-sm text-sm text-[#14213D] placeholder-[#9A968C]/70 focus:outline-none focus:ring-2 focus:ring-[#0F6E56]/25 focus:border-[#0F6E56] transition-colors disabled:opacity-50"
                 placeholder="Enter your password"
               />
             </div>
@@ -202,20 +210,9 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#14213D] text-white text-sm font-semibold
-                rounded-sm hover:bg-[#0F6E56] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#14213D] text-white text-sm font-semibold rounded-sm hover:bg-[#0F6E56] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <>
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Signing in…
-                </>
-              ) : (
-                `Sign in as ${state}`
-              )}
+              {loading ? 'Signing in…' : `Sign in as ${state}`}
             </button>
           </form>
         </div>

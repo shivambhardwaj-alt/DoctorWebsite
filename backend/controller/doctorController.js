@@ -53,6 +53,7 @@ const loginDoctor = async(req,res) => {
   try{
 
     const {email,password} = req.body;
+    console.log("Request Generated at login Doctor");
 
 
     const doctor_exist  = await doctorModel.findOne({email});
@@ -65,6 +66,7 @@ const loginDoctor = async(req,res) => {
       return res.json({success:false,message:"Password Incorrect"});
     }
     const doctorToken = jwt.sign({id:doctor_exist._id},process.env.JWT_SECRET);
+    console.log("Request Successful and token is generated for the user");
     res.json({success:true,doctorToken:doctorToken});
 
     

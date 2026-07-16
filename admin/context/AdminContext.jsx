@@ -7,7 +7,7 @@ export const AdminContext = createContext(null);
 const AdminContextProvider = ({ children }) => {
 
   // ===== Token State =====
-  const [adminToken, setToken] = useState(() => {
+  const [adminToken, setAdminToken] = useState(() => {
   return localStorage.getItem('adminToken') ?? '';
 });
 
@@ -191,7 +191,7 @@ const AdminContextProvider = ({ children }) => {
   // ===== Context Value =====
   const value = {
     adminToken,
-    setToken,
+    setAdminToken,
     backend_url,
     doctorList,
     loading,

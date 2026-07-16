@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom'
 import { DoctorContext } from '../context/DoctorContext.jsx'
 
 const Navbar = () => {
-    const { adminToken, setToken } = useContext(AdminContext);
+    const { adminToken, setAdminToken } = useContext(AdminContext);
     const { doctorToken, setDoctorToken } = useContext(DoctorContext);
     const navigate = useNavigate()
 
     const logout = () => {
         if (adminToken) {
-            setToken('')
+            setAdminToken('')
             localStorage.removeItem('adminToken')
         } else {
             setDoctorToken('')
