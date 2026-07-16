@@ -77,7 +77,7 @@ const TopDoctors = () => {
                 <div className="w-full h-44 bg-[#FAFAF7] border-b border-[#14213D]/8 flex items-center justify-center">
                   <img
                     src={item.image}
-                    alt={`Dr. ${item.name}`}
+                    alt={`${item.name}`}
                     className="w-full h-full object-contain p-4"
                     loading="lazy"
                   />
@@ -90,7 +90,7 @@ const TopDoctors = () => {
                   </div>
 
                   <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] leading-tight">
-                    Dr. {item.name}
+                     {item.name}
                   </h3>
                   <p className="text-xs text-[#6B6458] mb-4">{item.speciality}</p>
 

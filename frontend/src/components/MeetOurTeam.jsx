@@ -23,7 +23,7 @@ const MeetOurTeam = () => {
             <div className="relative h-64 w-64 mx-auto -mt-px overflow-hidden rounded-2xl">
               <img 
                 src={item.image} 
-                alt={`Dr. ${item.name}`} 
+                alt={` ${item.name}`} 
                 className="h-64 w-64 rounded-2xl hover:scale-105 transition-all duration-300 object-cover object-top"
               />
               <div className="absolute bottom-0 z-10 h-full w-full bg-gradient-to-t pointer-events-none from-black/90 to-transparent"></div>

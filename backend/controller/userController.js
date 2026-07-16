@@ -395,15 +395,9 @@ const deleteAppointment  = async(req,res) => {
 // ====================Api to make payments ================================
 
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_SECRET_KEY,
-});
-
 const paymentRazorpay = async (req, res) => {
   try {
     const { appointmentId } = req.body;
-    console.log('Request came here!');
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
@@ -414,13 +408,18 @@ const paymentRazorpay = async (req, res) => {
       });
     }
 
+    if (!appointmentData.amount || appointmentData.amount <= 0) {
+      return res.json({
+        success: false,
+        message: 'Invalid appointment amount',
+      });
+    }
+
     const options = {
-      amount: appointmentData.amount * 10000, // paise
+      amount: Math.round(appointmentData.amount * 100),
       currency: process.env.CURRENCY || 'INR',
       receipt: appointmentId,
     };
-
-
 
     const order = await razorpay.orders.create(options);
 
@@ -437,9 +436,6 @@ const paymentRazorpay = async (req, res) => {
     });
   }
 };
-
-
-
 // ===================================Api to verify Payment of Razor Pay====================================
 
 const setRazorPay =  async(req,res) => {
@@ -465,6 +461,35 @@ const setRazorPay =  async(req,res) => {
 
 
 
+const getBookedSlots = async (req, res) => {
+  try {
+    const { docId } = req.params;
+
+    const docData = await doctorModel.findById(docId).select('slots_booked');
+
+    if (!docData) {
+      return res.json({ success: false, message: 'Doctor not found' });
+    }
+
+    const slots_booked = docData.slots_booked || {};
+    const bookedSlots = [];
+
+    for (const slot_date in slots_booked) {
+      const [day, month, year] = slot_date.split('-');
+      const times = slots_booked[slot_date];
+      times.forEach(time => {
+        bookedSlots.push(`${year}-${month}-${day}_${time}`);
+      });
+    }
+
+    res.json({ success: true, bookedSlots });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, error: error.message });
+  }
+};
 
 
-export { registerUser,setRazorPay, loginUser ,getDoctors,updateProfile,getUserProfile,bookAppointment,myAppointmentList,deleteAppointment,paymentRazorpay};
+
+export { registerUser,setRazorPay, loginUser ,getDoctors,updateProfile,getUserProfile,bookAppointment,myAppointmentList,deleteAppointment,paymentRazorpay ,getBookedSlots};

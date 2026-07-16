@@ -67,7 +67,7 @@ const DoctorsList = () => {
             />
 
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-black truncate">Dr. {item.name}</h3>
+              <h3 className="font-semibold text-black truncate"> {item.name}</h3>
               <p className="text-sm text-black/45 truncate">{item.speciality}</p>
             </div>
 

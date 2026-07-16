@@ -13,8 +13,6 @@ const MyAppointment = () => {
   const [showPayModal, setShowPayModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  // Every appointment should carry its own price (set at booking time).
-  // Fall back to the doctor's current listed fee only if that's missing.
   const getFee = (appointment) =>
     appointment?.amount ?? appointment?.docData?.fees ?? null;
 
@@ -31,7 +29,6 @@ const MyAppointment = () => {
       setAppointments(data.appointments.reverse());
     }
   }
-  const CURRENCY =  import.meta.env.CURRENCY;
 
   useEffect(() => {
     if (userToken) {
@@ -40,7 +37,6 @@ const MyAppointment = () => {
   }, [userToken])
 
   const paymentInitialize = async (order) => {
-  console.log('Razorpay order.amount received from backend:', order.amount)
     if (!window.Razorpay) {
       toast.error('Razorpay SDK not loaded')
       return
@@ -49,7 +45,7 @@ const MyAppointment = () => {
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: order.amount,
-      currency: CURRENCY,
+      currency: order.currency,
       name: 'DoctorPayment',
       description: "Doctor's appointment fees",
       order_id: order.id,
@@ -175,7 +171,6 @@ const MyAppointment = () => {
 
       <div className="max-w-4xl mx-auto relative">
 
-  
         <header className="mb-8 sm:mb-10 border-b-2 border-[#14213D] pb-4 sm:pb-5">
           <p className="font-chart-mono text-[11px] tracking-[0.25em] text-[#0F6E56] uppercase mb-2">
             Appointment Log
@@ -198,7 +193,6 @@ const MyAppointment = () => {
           </p>
         </div>
 
-   
         <div className="space-y-4 mb-4">
           {appointments.map((item, index) => {
             const fee = getFee(item);
@@ -208,13 +202,11 @@ const MyAppointment = () => {
               className="relative bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)]
                 hover:shadow-[0_10px_24px_-10px_rgba(20,33,61,0.16)] transition-shadow duration-200 pl-6 pr-5 py-5"
             >
-         
               <div className="absolute left-2 top-0 bottom-0 border-l border-dashed border-[#14213D]/15 hidden sm:block" />
               <div className="absolute left-2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-[#14213D]/20 hidden sm:block" />
 
               <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-4 items-center">
 
-        
                 <div className="flex items-center gap-4 lg:contents">
                   <img
                     src={item.docData.image}
@@ -223,14 +215,13 @@ const MyAppointment = () => {
                   />
 
                   <div className="min-w-0 lg:hidden">
-                    <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] truncate">Dr. {item.docData.name}</h3>
+                    <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] truncate"> {item.docData.name}</h3>
                     <span className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#0F6E56]">{item.docData.speciality}</span>
                   </div>
                 </div>
 
-           
                 <div className="min-w-0 space-y-1.5">
-                  <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] hidden lg:block">Dr. {item.docData.name}</h3>
+                  <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] hidden lg:block"> {item.docData.name}</h3>
                   <span className="font-chart-mono text-[10px] tracking-[0.1em] uppercase text-[#0F6E56] hidden lg:inline-block">{item.docData.speciality}</span>
                   <p className="text-sm text-[#4A4438]">
                     {item.slot_date} &middot; <span className="font-medium">{item.slotTime}</span>
@@ -243,7 +234,6 @@ const MyAppointment = () => {
                   </p>
                 </div>
 
-          
                 {!item.cancelled ? (
                   <div className="flex sm:flex-col gap-2 lg:w-36">
                     <button
@@ -272,7 +262,6 @@ const MyAppointment = () => {
           })}
         </div>
 
-   
         {appointments.length === 0 && (
           <div className="text-center py-16 sm:py-20 bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)]">
             <p className="font-chart-mono text-[11px] tracking-[0.2em] text-[#0F6E56] uppercase mb-2">Empty log</p>
@@ -289,7 +278,6 @@ const MyAppointment = () => {
           </div>
         )}
 
-       
         <div className="text-center pt-10 mt-8 border-t border-[#14213D]/10">
           <p className="text-xs text-[#6B6458]">
             Need help? Contact <span className="font-medium text-[#0F6E56]">support@healthcare.com</span>
@@ -297,7 +285,6 @@ const MyAppointment = () => {
         </div>
       </div>
 
-    
       {showCancelModal && selectedAppointment && (
         <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-md max-w-sm w-full shadow-2xl border-t-4" style={{ borderTopColor: '#C1493A' }}>
@@ -306,7 +293,7 @@ const MyAppointment = () => {
               <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-4">Cancel this appointment?</h2>
 
               <div className="bg-[#FAFAF7] border border-[#14213D]/8 rounded-sm px-4 py-3 mb-4">
-                <p className="font-semibold text-sm text-[#14213D]">Dr. {selectedAppointment.docData.name}</p>
+                <p className="font-semibold text-sm text-[#14213D]"> {selectedAppointment.docData.name}</p>
                 <p className="text-xs text-[#6B6458] mt-0.5">{selectedAppointment.slot_date} at {selectedAppointment.slotTime}</p>
               </div>
 
@@ -333,7 +320,6 @@ const MyAppointment = () => {
         </div>
       )}
 
-      {/* Pay confirmation modal */}
       {showPayModal && selectedAppointment && (
         <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-md max-w-sm w-full shadow-2xl border-t-4" style={{ borderTopColor: '#0F6E56' }}>
@@ -342,7 +328,7 @@ const MyAppointment = () => {
               <h2 className="font-chart-serif text-xl font-semibold text-[#14213D] mb-4">Pay consultation fee</h2>
 
               <div className="bg-[#FAFAF7] border border-[#14213D]/8 rounded-sm px-4 py-3 mb-4">
-                <p className="font-semibold text-sm text-[#14213D]">Dr. {selectedAppointment.docData.name}</p>
+                <p className="font-semibold text-sm text-[#14213D]"> {selectedAppointment.docData.name}</p>
                 <p className="text-xs text-[#6B6458] mt-0.5 mb-3">{selectedAppointment.slot_date} at {selectedAppointment.slotTime}</p>
                 <div className="flex items-baseline gap-2 border-t border-[#14213D]/8 pt-3">
                   <span className="font-chart-serif text-2xl font-semibold text-[#14213D]">

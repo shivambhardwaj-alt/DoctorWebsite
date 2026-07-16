@@ -99,7 +99,7 @@ const AllAppointment = () => {
                         <div className="text-black/45">{appointment.slotTime || 'N/A'}</div>
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-black">
-                        Dr. {appointment.docData?.name || 'N/A'}
+                        {appointment.docData?.name || 'N/A'}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap text-sm font-semibold text-black">
                         ${appointment.docData?.fees || 0}

@@ -180,14 +180,14 @@ const AllDoctors = () => {
                       <div className="flex gap-4 mb-3">
                         <img
                           src={doc.image}
-                          alt={`Dr. ${doc.name}`}
+                          alt={` ${doc.name}`}
                           className="w-16 h-20 object-cover rounded-sm border border-[#14213D]/10 flex-shrink-0"
                           loading="lazy"
                         />
                         <div className="min-w-0">
                           <p className="font-chart-mono text-[10px] tracking-[0.1em] text-[#9A968C]">#{chartId}</p>
                           <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] leading-tight truncate">
-                            Dr. {doc.name}
+                            {doc.name}
                           </h3>
                           <p className="text-xs text-[#6B6458] italic mt-0.5 truncate">{doc.degree}</p>
                         </div>
@@ -242,7 +242,7 @@ const AllDoctors = () => {
             <div className="flex justify-between items-start mb-5">
               <div>
                 <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#9A968C] uppercase mb-1">Referral slip</p>
-                <h3 className="font-chart-serif text-xl font-semibold text-[#14213D]">Dr. {contactModal.name}</h3>
+                <h3 className="font-chart-serif text-xl font-semibold text-[#14213D]"> {contactModal.name}</h3>
               </div>
               <button
                 onClick={() => setContactModal(null)}

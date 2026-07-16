@@ -8,7 +8,7 @@ export const AppContext = createContext(null);
 const AppContextProvider = (props) => {
 
   const backend_url = import.meta.env.VITE_BACKEND_URL;
-  const currency_symbol = "$";
+  const currency_symbol = import.meta.env.VITE_CURRENCY;
 
   const [userToken, setToken] = useState(
     localStorage.getItem("userToken") || ""
