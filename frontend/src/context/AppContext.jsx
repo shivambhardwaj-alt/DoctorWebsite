@@ -7,7 +7,7 @@ export const AppContext = createContext(null);
 
 const AppContextProvider = (props) => {
 
-  const backend_url = import.meta.env.VITE_BACKEND_URL;
+  const backend_url = import.meta.env.VITE_LOCAL_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
   const currency_symbol = import.meta.env.VITE_CURRENCY;
 
   const [userToken, setToken] = useState(
@@ -31,7 +31,7 @@ const AppContextProvider = (props) => {
           },
         }
       );
-      // console.log(data);
+
 
       if (data.success) {
         setUserData(data.userData);
