@@ -12,6 +12,13 @@ import Razorpay from "razorpay";
 import {v2 as cloudinary} from 'cloudinary';
 import appointmentModel from '../models/appointmentModel.js';
 
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+
+
 const registerUser = async (req, res) => {
   try {
 
@@ -421,7 +428,7 @@ const paymentRazorpay = async (req, res) => {
       receipt: appointmentId,
     };
 
-    const order = await razorpay.orders.create(options);
+    const order = await razorpayInstance.orders.create(options);
 
     return res.json({
       success: true,
@@ -436,28 +443,24 @@ const paymentRazorpay = async (req, res) => {
     });
   }
 };
-// ===================================Api to verify Payment of Razor Pay====================================
 
-const setRazorPay =  async(req,res) => {
-  try{
-      const {razorpay_order_id} = req.body;
-      const orderInfo = await  razorPayInstance.orders.fetch(razorpay_order_id);
+const setRazorPay = async (req, res) => {
+  try {
+    const { razorpay_order_id } = req.body;
+    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
 
-      if(orderInfo.status == 'paid'){
-        await appointmentModel.findByIdAndUpdate(orderInfo.receipt,{payment:true});
-        res.json({success:true,message:"paymemnt Successful"});
-      }else{
-        res.json({success:false,message:'Payment Failed'});
-      }
+    if (orderInfo.status == 'paid') {
+      await appointmentModel.findByIdAndUpdate(orderInfo.receipt, { payment: true });
+      res.json({ success: true, message: "Payment Successful" });
+    } else {
+      res.json({ success: false, message: 'Payment Failed' });
+    }
 
-
-
-
-  }catch(error){
-
-    res.json({success:false,message:'Paymemnt Failed'});
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: 'Payment Failed' });
   }
-}
+};
 
 
 
