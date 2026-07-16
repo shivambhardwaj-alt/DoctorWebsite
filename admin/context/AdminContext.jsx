@@ -21,7 +21,7 @@ const AdminContextProvider = ({ children }) => {
   const [dashboardData,setDashboardData] = useState({});
 
   // ===== Backend URL =====
-  const backend_url = import.meta.env.VITE_BACKEND_URL;
+  const backend_url = import.meta.env.VITE_LOCAL_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
 
   // ===== Debug Logs =====
 

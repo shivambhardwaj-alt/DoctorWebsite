@@ -98,12 +98,10 @@ const MyAppointment = () => {
       const { data } = await axios.post(
         `${backend_url}/api/user/payment`,
         { appointmentId },
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${userToken}` } }
       )
+
+      console.log("Backend payment payload response:", data);
 
       if (!data.success) {
         toast.error('Unable to do the transaction')
@@ -111,6 +109,7 @@ const MyAppointment = () => {
       }
       await paymentInitialize(data.order)
     } catch (error) {
+      console.error("Payment API Error:", error);
       toast.error('Payment Failed due to Internal Reason!')
     }
   }
@@ -149,7 +148,7 @@ const MyAppointment = () => {
     setShowPayModal(true);
   }
 
-  const upcomingCount = appointments.filter(item => !item.cancelled).length;
+  const upcomingCount = appointments.filter(item => !item.cancelled && !item.payment).length;
   const cancelledCount = appointments.filter(item => item.cancelled).length;
 
   return (
@@ -230,11 +229,24 @@ const MyAppointment = () => {
                       {item.docData.address.line1}, {item.docData.address.line2}
                     </p>
                     <p className="font-chart-mono text-[9px] sm:text-[10px] tracking-[0.1em] uppercase text-[#6B6458]">
-                      {item.cancelled ? 'Cancelled' : 'Upcoming'} &middot; Fee {fee != null ? `${currency_symbol}${fee}` : 'N/A'}
+                      {item.cancelled ? 'Cancelled' : item.payment ? 'Paid' : 'Upcoming'} &middot; Fee {fee != null ? `${currency_symbol}${fee}` : 'N/A'}
                     </p>
                   </div>
 
-                  {!item.cancelled ? (
+                  {/* Dynamic payment status or actions rendering */}
+                  {item.cancelled ? (
+                    <div className="lg:w-36 flex justify-start lg:justify-end">
+                      <span className="px-3 py-1.5 bg-[#C1493A]/8 text-[#C1493A] font-chart-mono text-[10px] tracking-[0.1em] uppercase rounded-sm border border-[#C1493A]/15">
+                        Cancelled
+                      </span>
+                    </div>
+                  ) : item.payment ? (
+                    <div className="lg:w-36 flex justify-start lg:justify-end">
+                      <span className="px-3 py-1.5 bg-[#0F6E56]/8 text-[#0F6E56] font-chart-mono text-[10px] tracking-[0.1em] uppercase rounded-sm border border-[#0F6E56]/15">
+                        Paid
+                      </span>
+                    </div>
+                  ) : (
                     <div className="flex flex-row sm:flex-row lg:flex-col gap-2 w-full lg:w-36">
                       <button
                         onClick={() => handlePayClick(item)}
@@ -248,12 +260,6 @@ const MyAppointment = () => {
                       >
                         Cancel
                       </button>
-                    </div>
-                  ) : (
-                    <div className="lg:w-36 flex justify-start lg:justify-end">
-                      <span className="px-3 py-1.5 bg-[#C1493A]/8 text-[#C1493A] font-chart-mono text-[10px] tracking-[0.1em] uppercase rounded-sm border border-[#C1493A]/15">
-                        Cancelled
-                      </span>
                     </div>
                   )}
                 </div>
@@ -363,4 +369,4 @@ const MyAppointment = () => {
   )
 }
 
-export default MyAppointment
+export default MyAppointment;

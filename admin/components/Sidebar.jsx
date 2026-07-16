@@ -87,10 +87,6 @@ const Sidebar = () => {
             </ul>
 
             <div className="my-3 border-t border-black/10" />
-
-            <ul>
-              <NavItem to="/" icon={assets.cancel_icon} label="Cancelled" />
-            </ul>
           </div>
         )}
       </div>

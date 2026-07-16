@@ -8,7 +8,6 @@ const SPECIALITIES = [
   'Pediatricians', 'Neurologist', 'Gastroenterologist'
 ]
 
-// Color-coded like tabs on a physical patient-record filing folder
 const SPECIALITY_TABS = {
   'General Physician': '#7A8B99',
   'Gynecologist': '#B36B7A',
@@ -72,7 +71,7 @@ const AllDoctors = () => {
   }
 
   return (
-    <section className="min-h-screen bg-white py-10 sm:py-14 px-4 selection:bg-[#0F6E56]/15 relative overflow-hidden">
+    <section className="min-h-screen w-full max-w-full overflow-x-hidden bg-white py-8 sm:py-10 md:py-14 px-3 sm:px-4 selection:bg-[#0F6E56]/15 relative">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
         .font-chart-serif { font-family: 'Source Serif 4', Georgia, serif; }
@@ -84,38 +83,38 @@ const AllDoctors = () => {
             linear-gradient(to bottom, #0F6E5608 1px, transparent 1px);
           background-size: 28px 28px;
         }
+        .filing-scroll {
+          scrollbar-width: thin;
+        }
         .filing-scroll::-webkit-scrollbar { height: 4px; }
         .filing-scroll::-webkit-scrollbar-thumb { background: #14213D1A; border-radius: 4px; }
       `}</style>
 
-      {/* Chart-paper texture, full bleed */}
       <div className="absolute inset-0 chart-grid pointer-events-none" />
 
       <div className="max-w-6xl mx-auto font-chart-sans relative">
 
-        {/* Masthead */}
-        <header className="mb-8 sm:mb-10 border-b-2 border-[#14213D] pb-4 sm:pb-5">
-          <p className="font-chart-mono text-[10px] sm:text-[11px] tracking-[0.25em] text-[#0F6E56] uppercase mb-2">
+        <header className="mb-6 sm:mb-8 md:mb-10 border-b-2 border-[#14213D] pb-3 sm:pb-4 md:pb-5">
+          <p className="font-chart-mono text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.2em] sm:tracking-[0.25em] text-[#0F6E56] uppercase mb-2">
             Patient Directory &middot; Vol. 01
           </p>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
-            <h1 className="font-chart-serif text-3xl sm:text-4xl md:text-[2.75rem] font-semibold text-[#14213D] tracking-tight">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1 sm:gap-2">
+            <h1 className="font-chart-serif text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-semibold text-[#14213D] tracking-tight">
               Find Your Doctor
             </h1>
-            <p className="font-chart-mono text-xs text-[#6B6458] pb-1">
+            <p className="font-chart-mono text-[11px] sm:text-xs text-[#6B6458] sm:pb-1">
               {filteredDoc.length} record{filteredDoc.length === 1 ? '' : 's'} on file
             </p>
           </div>
         </header>
 
-        <div className="grid lg:grid-cols-[200px_1fr] gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-[200px_1fr] gap-4 sm:gap-6 lg:gap-8 min-w-0">
 
-          {/* Filing tabs */}
-          <aside className="lg:sticky lg:top-8 h-fit">
+          <aside className="relative z-10 lg:sticky lg:top-8 h-fit min-w-0">
             <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#9A968C] uppercase mb-2 px-1">
               Filed under
             </p>
-            <div className="filing-scroll flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
+            <div className="filing-scroll flex lg:flex-col gap-1.5 sm:gap-2 lg:gap-1.5 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
               {SPECIALITIES.map(f => {
                 const active = activeFilter === f
                 const color = f === 'All' ? '#14213D' : tabColor(f)
@@ -138,12 +137,11 @@ const AllDoctors = () => {
             </div>
           </aside>
 
-          {/* Records grid */}
-          <div>
+          <div className="min-w-0">
             {filteredDoc.length === 0 ? (
-              <div className="py-16 sm:py-20 text-center bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)] px-4">
+              <div className="py-12 sm:py-16 md:py-20 text-center bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.05)] px-4">
                 <p className="font-chart-mono text-[11px] tracking-[0.2em] text-[#0F6E56] uppercase mb-2">No match</p>
-                <h2 className="font-chart-serif text-xl sm:text-2xl text-[#14213D] mb-4">No records under this filing.</h2>
+                <h2 className="font-chart-serif text-lg sm:text-xl md:text-2xl text-[#14213D] mb-4">No records under this filing.</h2>
                 <button
                   onClick={() => setActiveFilter('All')}
                   className="px-5 py-2 border border-[#14213D] text-[#14213D] font-medium text-sm rounded-sm hover:bg-[#14213D] hover:text-white transition-colors"
@@ -161,32 +159,30 @@ const AllDoctors = () => {
                       key={doc._id}
                       className="relative bg-white rounded-md border border-[#14213D]/10 shadow-[0_1px_2px_rgba(20,33,61,0.06)]
                         hover:shadow-[0_10px_24px_-8px_rgba(20,33,61,0.16)] hover:-translate-y-0.5 transition-all duration-200
-                        pl-6 pr-5 pt-6 pb-5 flex flex-col"
+                        pl-6 pr-5 pt-6 pb-5 flex flex-col mt-2"
                     >
-                      {/* Folded specialty tab */}
                       <div
-                        className="absolute -top-2 right-4 px-2.5 py-1 rounded-t-sm font-chart-mono text-[9px] tracking-[0.12em] uppercase text-white"
+                        className="absolute -top-2 right-4 px-2.5 py-1 rounded-t-sm font-chart-mono text-[9px] tracking-[0.12em] uppercase text-white z-10"
                         style={{ backgroundColor: color }}
                       >
                         {doc.speciality}
                       </div>
 
-                      {/* Punch-hole binding edge */}
                       <div className="absolute left-2 top-0 bottom-0 border-l border-dashed border-[#14213D]/15" />
                       <div className="absolute left-2 top-5 -translate-x-1/2 w-2 h-2 rounded-full bg-white border border-[#14213D]/20" />
                       <div className="absolute left-2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white border border-[#14213D]/20" />
                       <div className="absolute left-2 bottom-5 -translate-x-1/2 w-2 h-2 rounded-full bg-white border border-[#14213D]/20" />
 
-                      <div className="flex gap-4 mb-3">
+                      <div className="flex gap-3 sm:gap-4 mb-3">
                         <img
                           src={doc.image}
                           alt={` ${doc.name}`}
-                          className="w-16 h-20 object-cover rounded-sm border border-[#14213D]/10 flex-shrink-0"
+                          className="w-14 h-18 sm:w-16 sm:h-20 object-cover rounded-sm border border-[#14213D]/10 flex-shrink-0"
                           loading="lazy"
                         />
                         <div className="min-w-0">
                           <p className="font-chart-mono text-[10px] tracking-[0.1em] text-[#9A968C]">#{chartId}</p>
-                          <h3 className="font-chart-serif text-lg font-semibold text-[#14213D] leading-tight truncate">
+                          <h3 className="font-chart-serif text-base sm:text-lg font-semibold text-[#14213D] leading-tight truncate">
                             {doc.name}
                           </h3>
                           <p className="text-xs text-[#6B6458] italic mt-0.5 truncate">{doc.degree}</p>
@@ -205,7 +201,7 @@ const AllDoctors = () => {
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 font-medium text-[#3B8A6E] hover:underline"
                           >
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.83 14.03c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.95-.31-1.64-.6-2.89-1.25-4.77-4.16-4.92-4.35-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.01-2.4.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .9 2.14.07.15.12.32.02.51-.09.2-.14.32-.28.5-.14.17-.29.38-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.2.71-.83.9-1.11.19-.28.38-.23.63-.14.26.1 1.65.78 1.93.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.83 14.03c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.95-.31-1.64-.6-2.89-1.25-4.77-4.16-4.92-4.35-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.01-2.4.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .9 2.14.07.15.12.32.02.51-.09.2-.14.32-.28.5-.14.17-.29.38-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.2.71-.83.9-1.11.19-.28.38-.23.63-.14.26.1 1.65.78 1.93.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z" /></svg>
                             WhatsApp
                           </a>
                         )}
@@ -213,7 +209,7 @@ const AllDoctors = () => {
                           onClick={() => setContactModal(doc)}
                           className="inline-flex items-center gap-1 font-medium text-[#14213D] hover:text-[#0F6E56] transition-colors"
                         >
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16v12H7l-3 3V4Z"/></svg>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16v12H7l-3 3V4Z" /></svg>
                           Message
                         </button>
                       </div>
@@ -234,11 +230,10 @@ const AllDoctors = () => {
         </div>
       </div>
 
-      {/* Contact modal — styled as a referral slip */}
       {contactModal && (
         <div className="fixed inset-0 bg-[#14213D]/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="bg-white rounded-t-md sm:rounded-md p-5 sm:p-6 max-w-md w-full shadow-2xl border-t-4 relative font-chart-sans max-h-[92vh] overflow-y-auto"
-               style={{ borderTopColor: tabColor(contactModal.speciality) }}>
+            style={{ borderTopColor: tabColor(contactModal.speciality) }}>
             <div className="flex justify-between items-start mb-5">
               <div>
                 <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#9A968C] uppercase mb-1">Referral slip</p>
@@ -288,9 +283,8 @@ const AllDoctors = () => {
               </div>
 
               {statusMsg && (
-                <p className={`font-chart-mono text-xs text-center py-2 rounded-sm ${
-                  statusMsg.includes('success') ? 'bg-[#3B8A6E]/10 text-[#3B8A6E]' : 'bg-[#C1493A]/10 text-[#C1493A]'
-                }`}>
+                <p className={`font-chart-mono text-xs text-center py-2 rounded-sm ${statusMsg.includes('success') ? 'bg-[#3B8A6E]/10 text-[#3B8A6E]' : 'bg-[#C1493A]/10 text-[#C1493A]'
+                  }`}>
                   {statusMsg}
                 </p>
               )}

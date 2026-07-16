@@ -18,3 +18,15 @@
         @apply text-white bg-green-600
     }
 }
+
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+#root {
+  overflow-x: hidden;
+  width: 100%;
+}

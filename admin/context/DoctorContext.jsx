@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -10,10 +10,10 @@ const DoctorContextProvider = (props) => {
   const [doctorToken, setDoctorToken] = useState(localStorage.getItem('doctorToken') || '');
   const [appointmentData, setAppointmentData] = useState([]);
   const [dashboardData, setDashboardData] = useState({});
-  const [doctorProfile, setDoctorProfile] = useState({});
+  const [doctorProfile, setDoctorProfile] = useState(null);
   const [cancelledAppointments, setCancelledAppointments] = useState([]);
   const [todayAppointment, setTodayAppointment] = useState([]);
-  const [latestAppointments, setLatestAppointments] = useState([]);
+  const [loadingProfile, setLoadingProfile] = useState(false);
 
   function sortByDate(data, order) {
     return [...data].sort((a, b) => {
@@ -128,20 +128,27 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  const getDoctorProfile = async () => {
-    try {
-      const { data } = await axios.get(
-        backend_url + '/api/doctor/get-profile',
-        { headers: { Authorization: `Bearer ${doctorToken}` } }
-      );
+  // worthless function here ....
 
-      if (data.success) {
-        setDoctorProfile(data.doctorData);
-      }
-    } catch (error) {
-      console.log(error.message);
+ const getDoctorProfile = async () => {
+  if (!doctorToken) return;
+  try {
+    const { data } = await axios.get(
+      backend_url + '/api/doctor/get-profile',
+      { headers: { Authorization: `Bearer ${doctorToken}` } }
+    );
+    console.log(data.doctorData);
+
+    if (data.success) {
+      setDoctorProfile(data.doctorData || data.doctor || data.profile || {});
+    } else {
+      setDoctorProfile({});
     }
-  };
+  } catch (error) {
+    console.log(error.message);
+    setDoctorProfile({});
+  }
+};
 
   const getCancelledAppointments = async () => {
     try {
@@ -159,21 +166,29 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  const getTodayAppointment = async () => {
-    try {
-      const { data } = await axios.get(
-        backend_url + '/api/doctor/today-appointment',
-        { headers: { Authorization: `Bearer ${doctorToken}` } }
-      );
+const getTodayAppointment = async () => {
+  try {
+    const { data } = await axios.get(
+      backend_url + '/api/doctor/today-appointment',
+      { headers: { Authorization: `Bearer ${doctorToken}` } }
+    );
 
-      if (data.success) {
-        const sortedAppointments = sortByDate(data.data || [], 'asc');
-        setTodayAppointment(sortedAppointments);
-      }
-    } catch (error) {
-      console.log(error.message);
+    if (data.success) {
+      const sortedAppointments = sortByDate(data.appointments || [], 'asc');
+      setTodayAppointment(sortedAppointments);
+      console.log("Today appointments are:", data);
     }
-  };
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+  useEffect(() => {
+    if (doctorToken) {
+      getDoctorProfile();
+    }
+  }, [doctorToken]);
+ 
 
   const value = {
     doctorToken,
@@ -198,8 +213,7 @@ const DoctorContextProvider = (props) => {
     setTodayAppointment,
     getTodayAppointment,
     filterByDateAndTime,
-    latestAppointments,
-    setLatestAppointments,
+    loadingProfile,
   };
 
   return (

@@ -1,30 +1,32 @@
-// ============== api to register user ==================
+
+import 'dotenv/config';
+
+
+
 
 import validator from 'validator';
 import bcrypt from 'bcrypt';
-import userModel from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
-import 'dotenv/config';
-import doctorModel from '../models/doctorsModel.js';
 import Razorpay from "razorpay";
+import { v2 as cloudinary } from 'cloudinary';
 
 
-import {v2 as cloudinary} from 'cloudinary';
+import userModel from '../models/userModel.js';
+import doctorModel from '../models/doctorsModel.js';
 import appointmentModel from '../models/appointmentModel.js';
+
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
+  key_secret: process.env.RAZORPAY_SECRET_KEY,
 });
-
 
 
 const registerUser = async (req, res) => {
   try {
-
     const { name, email, password } = req.body;
 
-    // ================= validation =======================
+    
     if (!name || !email || !password) {
       return res.json({ success: false, message: "Missing Credentials" });
     }
@@ -37,117 +39,91 @@ const registerUser = async (req, res) => {
       return res.json({ success: false, message: 'Please Make Password Strong' });
     }
 
-    // ================= Check if User exists =================
+  
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.json({ success: false, message: 'User already exists' });
     }
 
-    // ================= Hash password ======================
+  
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const userData = {
       name,
       email,
-      password: hashedPassword   // 
+      password: hashedPassword
     };
 
     const newUser = new userModel(userData);
 
-    // ================= Save user ==========================
+    
     const user = await newUser.save();
     console.log(user);
 
-    // =================== information to send to thefrontend ==================
+    
+    const { password_new, ...userWithoutPassword } = user._doc;
 
-    const { password_new, ...userWithoutPassword } = user._doc; // or user.toObject()
-      
-
-
-
-    // ================= JWT ================================
+  
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    res.json({ success: true, message: 'Signed Up', token ,userWithoutPassword});
+    res.json({ success: true, message: 'Signed Up', token, userWithoutPassword });
 
   } catch (error) {
-    res.json({ success: false, message: 'Signup Failed' }); // 
+    res.json({ success: false, message: 'Signup Failed' });
   }
 };
 
 // ====================== login user ======================
-
 const loginUser = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
-   const existUser = await userModel.findOne({ email: email});
-if (!existUser) {
-  return res.status(401).json({ success: false, message: "Wrong Credentials" });
-}
+    const existUser = await userModel.findOne({ email: email });
+    if (!existUser) {
+      return res.status(401).json({ success: false, message: "Wrong Credentials" });
+    }
 
-const isMatch = await bcrypt.compare(password, existUser.password);
+    const isMatch = await bcrypt.compare(password, existUser.password);
 
-const userObj = existUser.toObject();
-delete userObj.password;
+    const userObj = existUser.toObject();
+    delete userObj.password;
 
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Wrong Password" });
+    }
 
-
-if (!isMatch) {
-  return res.status(401).json({ success: false, message: "Wrong Password" });
-}
-
-const token = jwt.sign({ id: existUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-res.json({ success: true, token,userObj });
+    const token = jwt.sign({ id: existUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    res.json({ success: true, token, userObj });
 
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
 };
 
-
-
 // ====================api to fetch all the doctors which holds the value true========================
-const getDoctors = async(req,res) =>  {
-  try{
+const getDoctors = async (req, res) => {
+  try {
     const availableDoctors = await doctorModel.find({ available: true }).select("-password");
-
-
 
     res.status(200).json({
       success: true,
       count: availableDoctors.length,
       availableDoctors,
     });
-    
 
-  }catch(error){
-     res.status(500).json({
+  } catch (error) {
+    res.status(500).json({
       success: false,
       message: error.message,
     });
   }
-
-
-
-
-  
 }
-// const getDoctors = async (req, res) => {
-//   res.json({ success: true, message: "Route is working" });
-// };
-
 
 // ============================= api to get the profile of the user =============================
-
-
 const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    // console.log(userId);
-    // console.log(req)
 
     const userData = await userModel
       .findById(userId)
@@ -160,17 +136,11 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-
-
-
-
 // ==============================api to update the profile of the user ========================
-
 const updateProfile = async (req, res) => {
   try {
     const { name, phone, address, dob, gender } = req.body;
-    const userId = req.user.id; 
-    
+    const userId = req.user.id;
 
     let image_url = req.body.image;
 
@@ -186,7 +156,7 @@ const updateProfile = async (req, res) => {
 
     // ===== Safe address handling =====
     let parsedAddress = address;
-    if (typeof(address) === "string") {
+    if (typeof (address) === "string") {
       parsedAddress = JSON.parse(address);
     }
 
@@ -209,7 +179,7 @@ const updateProfile = async (req, res) => {
       {
         new: true,
         runValidators: true,
-        select: "-password" 
+        select: "-password"
       }
     );
 
@@ -235,13 +205,7 @@ const updateProfile = async (req, res) => {
   }
 };
 
-
-
-
 // =========================== Api to make an appointment =======================
-
-
-
 const bookAppointment = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -309,8 +273,6 @@ const bookAppointment = async (req, res) => {
       date: Date.now()
     };
 
-    // console.log("Appointment Data:", appointmentData);
-
     const newAppointment = new appointmentModel(appointmentData);
     await newAppointment.save();
 
@@ -328,83 +290,53 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-
-
-
-
-
 // ========================Api to get all the user appointment ============================
-
-const myAppointmentList = async(req,res) => {
-  try{
-
+const myAppointmentList = async (req, res) => {
+  try {
     const userId = req.user.id;
-    // console.log(userId)
 
-    const appointments = await appointmentModel.find({ 
-  userId: userId, 
-   
-});
+    const appointments = await appointmentModel.find({
+      userId: userId,
+    });
 
-    // console.log(appointments)
-    res.json({success:true,appointments});
+    res.json({ success: true, appointments });
 
-  }catch(error){
-
-
-
-    res.json({success:false,error:error.message});
-
+  } catch (error) {
+    res.json({ success: false, error: error.message });
   }
 }
-
-
-
 
 // ==============================Api to delete the appointment =============================
+const deleteAppointment = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { appointmentId } = req.body;
 
+    const appointmentData = await appointmentModel.findById(appointmentId);
+    if (appointmentData.userId !== userId) {
+      return res.json({ success: false, error: "User Not Found" });
+    }
+    await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
 
-const deleteAppointment  = async(req,res) => {
+    const { doc_id, slot_date, slotTime } = appointmentData;
 
+    const doctorData = await doctorModel.findById(doc_id);
+    let slots_booked = doctorData.slots_booked;
+    slots_booked[slot_date] = slots_booked[slot_date].filter((e) => e !== slotTime);
 
-  try{
+    await doctorModel.findByIdAndUpdate(doc_id, { slots_booked });
 
+    res.json({ success: true, message: 'Cancelled' });
 
-  const userId = req.user.id;
-  const {appointmentId} = req.body;
-  // console.log(appointmentId);
-  // console.log(userId);
-  const appointmentData = await appointmentModel.findById(appointmentId);
-  if(appointmentData.userId !== userId){
-    return res.json({success:false,error:"User Not Found"});
+  } catch (error) {
+    res.json({ success: false, error: error.message });
   }
-  await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true});
-
-  const {doc_id,slot_date,slotTime} = appointmentData;
-
-  const doctorData = await doctorModel.findById(doc_id);
-  let slots_booked = doctorData.slots_booked;
-  slots_booked[slot_date] = slots_booked[slot_date].filter((e) => e !== slotTime);
-
-  await doctorModel.findByIdAndUpdate(doc_id,{slots_booked});
-
-  res.json({success:true,message:'Cancelled'});
-
-  }catch(error){
-    res.json({success:false,error:error.message});
-  }
-
-
-
 }
 
-
 // ====================Api to make payments ================================
-
-
 const paymentRazorpay = async (req, res) => {
-  console.log("Request came here for the transaction")
-;  try {
+  console.log("Request came here for the transaction");
+  try {
     const { appointmentId } = req.body;
 
     const appointmentData = await appointmentModel.findById(appointmentId);
@@ -463,8 +395,6 @@ const setRazorPay = async (req, res) => {
   }
 };
 
-
-
 const getBookedSlots = async (req, res) => {
   try {
     const { docId } = req.params;
@@ -494,6 +424,16 @@ const getBookedSlots = async (req, res) => {
   }
 };
 
-
-
-export { registerUser,setRazorPay, loginUser ,getDoctors,updateProfile,getUserProfile,bookAppointment,myAppointmentList,deleteAppointment,paymentRazorpay ,getBookedSlots};
+export {
+  registerUser,
+  setRazorPay,
+  loginUser,
+  getDoctors,
+  updateProfile,
+  getUserProfile,
+  bookAppointment,
+  myAppointmentList,
+  deleteAppointment,
+  paymentRazorpay,
+  getBookedSlots
+};

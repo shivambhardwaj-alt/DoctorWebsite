@@ -138,11 +138,14 @@ const Navbar = () => {
         </div>
       </div>
 
-     
+      {/* Mobile menu overlay */}
       <div
-        className={`fixed inset-0 bg-white z-40 transform ${
-          showMenu ? 'translate-x-0' : 'translate-x-full'
-        } transition-transform duration-300 lg:hidden font-chart-sans`}
+        className={`fixed inset-0 w-screen h-screen bg-white z-[9999] transform ${
+          showMenu
+            ? 'translate-x-0 visible pointer-events-auto'
+            : 'translate-x-full invisible pointer-events-none'
+        } transition-transform duration-300 ease-in-out lg:hidden font-chart-sans overflow-y-auto`}
+        aria-hidden={!showMenu}
       >
         <div className="flex items-center justify-between p-5 border-b border-[#14213D]/10">
           <div className="flex items-center gap-2.5">

@@ -450,57 +450,29 @@ const deleteAppointment = async(req,res) => {
     res.json({success:false,error:error.message});
   }
 }
-
 const getTodayAppointment = async (req, res) => {
   try {
-    const {docId} = req.user;
+    const { docId } = req.user;
 
-
-    const now = new Date();
-    const todayDate = `${String(now.getDate()).padStart(2, "0")}-${String(
-      now.getMonth() + 1
-    ).padStart(2, "0")}-${now.getFullYear()}`;
+    const today = new Date();
+    const formattedDate = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
 
     const appointments = await appointmentModel.find({
       doc_id: docId,
-      slot_date: todayDate,
-      cancelled: false
+      slot_date: formattedDate,
     });
 
-
-    console.log(appointments);
-
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-    const toMinutes = (timeStr) => {
-      let [time, meridian] = timeStr.split(" ");
-      let [h, m] = time.split(":").map(Number);
-
-      if (meridian === "PM" && h !== 12) h += 12;
-      if (meridian === "AM" && h === 12) h = 0;
-
-      return h * 60 + m;
-    };
-
-    const upcoming = appointments.filter(app =>
-      toMinutes(app.slotTime) >= currentMinutes
-    );
-
-    return res.json({
+    res.json({
       success: true,
-      count: upcoming.length,
-      data: upcoming
+      appointments,
     });
-
   } catch (error) {
-    return res.json({
+    res.json({
       success: false,
-      error: error.message
+      message: error.message,
     });
   }
 };
-
-
 // ====================== API TO MARK THE COMPLETION OF THE APPOINTMENT= =================================
 
 const markCompleteAppointment = async(req,res) => {
@@ -514,7 +486,6 @@ const markCompleteAppointment = async(req,res) => {
 
     }
     return res.json({success:false,data : 'Failed'});
-
 
 
   }catch(error){
