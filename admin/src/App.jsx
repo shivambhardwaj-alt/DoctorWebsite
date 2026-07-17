@@ -19,8 +19,8 @@ import DoctorsList from '../pages/admin/DoctorsList'
 
 // Doctor Pages
 import DoctorProfile from '../pages/doctor/DoctorProfile'
-import DoctorAppointment from '../pages/doctor/doctorAppointment'
-import DoctorDashboard from '../pages/doctor/doctorDashboard'
+import DoctorAppointment from '../pages/doctor/DoctorAppointment'
+import DoctorDashboard from '../pages/doctor/DoctorDashboard'
 import AdminHome from '../pages/admin/AdminHome'
 import DoctorHome from '../pages/doctor/DoctorHome'
 
