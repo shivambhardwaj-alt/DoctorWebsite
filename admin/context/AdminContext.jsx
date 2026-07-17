@@ -6,31 +6,31 @@ export const AdminContext = createContext(null);
 
 const AdminContextProvider = ({ children }) => {
 
-  // ===== Token State =====
+ 
   const [adminToken, setAdminToken] = useState(() => {
   return localStorage.getItem('adminToken') ?? '';
 });
 
 
 
-  // ===== Data States =====
+
   const [doctorList, setDoctorList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [appointmentList,setAppointmentsList] = useState([]);
   const [dashboardData,setDashboardData] = useState({});
 
-  // ===== Backend URL =====
+
   const backend_url = import.meta.env.VITE_LOCAL_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
 
-  // ===== Debug Logs =====
 
 
 
 
-  // =============== changing the value of the availability =======================
+
+  
   const changeAvailable = async (doc_id) => {
-    console.log(doc_id);
+   
   try {
     const { data } = await axios.post(
       `${backend_url}/api/admin/change-availability`,
@@ -45,7 +45,7 @@ const AdminContextProvider = ({ children }) => {
     if (data.success) {
       toast.success(data.message);
 
-      //  Update doctor availability locally
+     
       setDoctorList((prev) =>
         prev.map((doc) =>
           doc._id === doc_id
@@ -87,7 +87,7 @@ const AdminContextProvider = ({ children }) => {
       try{
 
         const {data} = await axios.get(backend_url + '/api/admin/get-dashboard-data',{headers:{Authorization: `Bearer ${adminToken}`}});
-        console.log(data)
+          
         if(data.success){
           setDashboardData(data.dashboard)
         }
@@ -109,7 +109,7 @@ const AdminContextProvider = ({ children }) => {
     const fetchDoctors = async () => {
       try {
         setLoading(true);
-        console.log(" Fetching doctors...");
+        
 
         const response = await axios.get(
           `${backend_url}/api/admin/all-doctors`,
@@ -125,7 +125,7 @@ const AdminContextProvider = ({ children }) => {
         
 
         const { data } = response;
-        console.log(data);
+        
 
 
 

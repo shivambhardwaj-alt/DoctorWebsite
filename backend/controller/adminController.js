@@ -211,11 +211,16 @@ const adminDashboardData = async(req,res) => {
 
     const appointments = await appointmentModel.find({});
     const new_appointments = appointments.length > 10 ? appointments.reverse().slice(0,10): appointments;
+    const amount = appointments.filter((app) => app.isCompleted && app.payment).reduce((total , app) => total += app.amount , 0);
+
+
+
     const dasboardData = {
       doctors:doctors_data.length,
       appointments:appointments.length,
       patients:users_data.length,
-      newAppointments :new_appointments
+      newAppointments :new_appointments,
+      amount : amount,
     }
 
 

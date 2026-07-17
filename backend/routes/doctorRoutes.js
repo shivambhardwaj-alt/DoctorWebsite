@@ -1,6 +1,6 @@
 import express from 'express';
 // import DoctorsList from '../../admin/pages/admin/DoctorsList';
-import { cancelAppointment, changeProfile, completeAppointment, dashboardDataFetch, deleteAppointment, getCancelled, getDoctorAppointment, getDoctorProfile, getTodayAppointment, loginDoctor, markCompleteAppointment } from '../controller/doctorController.js';
+import { cancelAppointment, changeProfile,markPaid, completeAppointment, dashboardDataFetch, deleteAppointment, getCancelled, getDoctorAppointment, getDoctorProfile, getTodayAppointment, loginDoctor, markCompleteAppointment } from '../controller/doctorController.js';
 import authDoctor from '../middlewares/authDoctor.js';
 
 import upload from '../middlewares/multer.js';
@@ -20,7 +20,8 @@ doctorRouter.post('/change-profile',authDoctor,upload.single('image'),changeProf
 doctorRouter.get('/get-cancelled',authDoctor,getCancelled);
 doctorRouter.post('/delete-appointment',authDoctor,deleteAppointment);
 doctorRouter.get('/today-appointment',authDoctor,getTodayAppointment);
-doctorRouter.post('/complete-appointment',authDoctor,markCompleteAppointment);
+doctorRouter.post('/mark-complete-appointment',authDoctor,markCompleteAppointment);
+doctorRouter.post('/mark-paid',authDoctor , markPaid);
 
 
 

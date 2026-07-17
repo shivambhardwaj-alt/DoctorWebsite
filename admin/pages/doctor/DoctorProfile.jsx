@@ -30,7 +30,7 @@ const DoctorProfile = () => {
         }
       );
 
-      console.log('profile response:', data);
+      
 
       const profile = data?.doctorData || data?.doctor || data?.profile || {};
       setDoctorProfile(profile);

@@ -25,39 +25,50 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
 
-                    {/* Logo & Brand */}
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
-                            <img
-                                src={assets.admin_logo}
-                                alt="Doctors Portal Admin"
-                                className="h-11 w-11 rounded-xl border border-black/10 hover:scale-105 transition-transform duration-200 cursor-pointer p-1.5"
-                            />
-                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-black rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold text-white">
-                                A
+
+                    <div className="flex items-center space-x-4 p-1  bg-white/80 backdrop-blur-md border border-slate-100 rounded-2xl shadow-sm max-w-max">
+                   
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 flex items-center justify-center bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-xl shadow-md shadow-blue-100">
+                                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                    <circle cx="12" cy="13" r="1.5" fill="currentColor" />
+                                    <circle cx="8" cy="9" r="1.5" fill="currentColor" />
+                                    <circle cx="16" cy="9" r="1.5" fill="currentColor" />
+                                </svg>
                             </div>
+
+                         
+                            <h1 className="text-xl tracking-tight">
+                                <span className="font-extrabold text-blue-600">Care</span>
+                                <span className="font-semibold text-slate-700">Connect</span>
+                            </h1>
                         </div>
 
-                        <div className="hidden md:flex flex-col">
-                            <h1 className="text-xl font-bold text-black tracking-tight">
+                       
+                        <div className="hidden md:block h-8 w-[1px] bg-slate-200" />
+
+                       
+                        <div className="hidden md:flex flex-col justify-center">
+                            <h2 className="text-sm font-bold text-slate-800 leading-tight">
                                 Doctors Portal
-                            </h1>
-                            <p className="text-[11px] font-semibold text-black/50 tracking-[0.15em] uppercase">
+                            </h2>
+                            <p className="text-[10px] font-bold text-blue-500/80 tracking-wider uppercase mt-0.5">
                                 {adminToken ? 'Admin Dashboard' : 'Doctor Portal'}
                             </p>
                         </div>
                     </div>
 
-                    {/* User Status & Logout */}
+                
                     <div className="flex items-center space-x-3">
-                        {/* User Status Badge */}
+                       
                         <div className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider
                             bg-black/5 border border-black/10 text-black/70 transition-colors duration-200
                             hover:bg-black/10">
                             {adminToken ? 'Admin' : 'Doctor'}
                         </div>
 
-                        {/* Logout Button */}
+                     
                         <button
                             onClick={logout}
                             className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-black/85

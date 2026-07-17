@@ -137,7 +137,7 @@ const DoctorContextProvider = (props) => {
       backend_url + '/api/doctor/get-profile',
       { headers: { Authorization: `Bearer ${doctorToken}` } }
     );
-    console.log(data.doctorData);
+ 
 
     if (data.success) {
       setDoctorProfile(data.doctorData || data.doctor || data.profile || {});
@@ -176,7 +176,7 @@ const getTodayAppointment = async () => {
     if (data.success) {
       const sortedAppointments = sortByDate(data.appointments || [], 'asc');
       setTodayAppointment(sortedAppointments);
-      console.log("Today appointments are:", data);
+      
     }
   } catch (error) {
     console.log(error.message);

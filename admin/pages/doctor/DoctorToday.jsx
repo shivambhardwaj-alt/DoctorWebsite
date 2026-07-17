@@ -46,8 +46,7 @@ const DoctorToday = () => {
   return (
     <div className="min-h-screen bg-[#FAFAF9] px-6 py-12 font-sans tracking-tight">
       <div className="max-w-5xl mx-auto">
-        
-        {/* Header Block */}
+
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-10 border-b-2 border-[#14213D] pb-6">
           <div>
             <h1 className="text-3xl font-bold text-[#14213D] uppercase tracking-wide">
@@ -62,7 +61,6 @@ const DoctorToday = () => {
           </div>
         </div>
 
-        {/* Core Content Area */}
         {loading ? (
           <div className="space-y-4">
             {[1, 2].map((i) => (
@@ -71,8 +69,7 @@ const DoctorToday = () => {
           </div>
         ) : todayAppointment?.length > 0 ? (
           <div className="border border-[#14213D]/10 bg-white shadow-sm divide-y divide-[#14213D]/10">
-            
-            {/* Table Header Row (Hidden on mobile stack) */}
+
             <div className="hidden md:flex items-center justify-between bg-[#14213D]/5 px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-[#8A8578]">
               <div className="w-2/5">Patient Details</div>
               <div className="w-1/5 text-center">Scheduled Time</div>
@@ -80,13 +77,11 @@ const DoctorToday = () => {
               <div className="w-1/5 text-right">Status & Management</div>
             </div>
 
-            {/* Appointment Map */}
             {todayAppointment.map((item) => (
               <div
                 key={item._id}
                 className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 hover:bg-[#FAFAF9] transition-colors"
               >
-                {/* 1. Patient Info Profile */}
                 <div className="md:w-2/5 flex items-start gap-4 min-w-0">
                   <img
                     src={item?.userData?.image || 'https://via.placeholder.com/100'}
@@ -106,7 +101,6 @@ const DoctorToday = () => {
                   </div>
                 </div>
 
-                {/* 2. Slot Time Block */}
                 <div className="md:w-1/5 flex flex-row md:flex-col items-baseline justify-between md:justify-center md:items-center gap-1 border-t md:border-t-0 pt-2 md:pt-0 border-[#14213D]/5">
                   <span className="text-[10px] md:hidden font-bold uppercase tracking-wider text-[#8A8578]">Appointment Time</span>
                   <span className="text-lg font-bold text-[#14213D] tabular-nums bg-[#14213D]/5 px-2.5 py-1 border border-[#14213D]/10 md:border-0 md:bg-transparent md:p-0">
@@ -114,18 +108,16 @@ const DoctorToday = () => {
                   </span>
                 </div>
 
-                {/* 3. Financial/Fee Details Block */}
                 <div className="md:w-1/5 flex flex-row md:flex-col items-baseline justify-between md:justify-center md:items-center gap-1">
                   <span className="text-[10px] md:hidden font-bold uppercase tracking-wider text-[#8A8578]">Consultation Fee</span>
                   <div className="text-center font-semibold text-sm text-[#14213D]">
-                    ₹{item?.amount || '0'} 
+                    ₹{item?.amount || '0'}
                     <span className="text-[10px] font-bold block tracking-wider uppercase mt-0.5 text-[#8A8578]">
                       Base Charge
                     </span>
                   </div>
                 </div>
 
-                {/* 4. Action and Status Buttons */}
                 <div className="md:w-1/5 flex items-center justify-between md:justify-end gap-3 border-t md:border-t-0 pt-4 md:pt-0 border-[#14213D]/5">
                   <span
                     className={`text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-1 border ${
@@ -137,17 +129,23 @@ const DoctorToday = () => {
                     {item?.payment ? 'PAID' : 'UNPAID'}
                   </span>
 
-                  <button
-                    onClick={() => completedAppointment(item._id)}
-                    disabled={item?.isCompleted || completingId === item._id}
-                    className={`text-xs font-bold tracking-wider uppercase px-4 py-2.5 border transition-colors min-w-[110px] text-center ${
-                      item?.isCompleted
-                        ? 'bg-[#0F6E56]/10 text-[#0F6E56] border-[#0F6E56]/20 cursor-default font-extrabold'
-                        : 'bg-[#14213D] text-white border-[#14213D] hover:bg-[#0F6E56] hover:border-[#0F6E56] disabled:opacity-50'
-                    }`}
-                  >
-                    {item?.isCompleted ? '✓ DONE' : completingId === item._id ? '...' : 'COMPLETE'}
-                  </button>
+                  {item?.cancelled ? (
+                    <span className="text-xs font-extrabold tracking-wider uppercase px-4 py-2.5 border min-w-[110px] text-center bg-[#C1493A]/10 text-[#C1493A] border-[#C1493A]/20">
+                      ✕ CANCELLED
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => completedAppointment(item._id)}
+                      disabled={item?.isCompleted || completingId === item._id}
+                      className={`text-xs font-bold tracking-wider uppercase px-4 py-2.5 border transition-colors min-w-[110px] text-center ${
+                        item?.isCompleted
+                          ? 'bg-[#0F6E56]/10 text-[#0F6E56] border-[#0F6E56]/20 cursor-default font-extrabold'
+                          : 'bg-[#14213D] text-white border-[#14213D] hover:bg-[#0F6E56] hover:border-[#0F6E56] disabled:opacity-50'
+                      }`}
+                    >
+                      {item?.isCompleted ? '✓ DONE' : completingId === item._id ? '...' : 'COMPLETE'}
+                    </button>
+                  )}
                 </div>
 
               </div>

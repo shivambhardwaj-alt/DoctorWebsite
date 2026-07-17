@@ -10,6 +10,7 @@ import userRouter from './routes/userRoutes.js';
 import doctorRouter from './routes/doctorRoutes.js';
 import mailRouter from './routes/mailRouter.js';
 import smsRouter from './routes/smsRoutes.js';
+import './scheduler/scheduler.js'
 // create app
 const app = express()
 
