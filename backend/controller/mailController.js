@@ -6,6 +6,7 @@ import 'dotenv/config';
 export const sendMailDeveloper = async (req, res) => {
   try {
     const { message } = req.body;
+    console.log("Request Came in sendMail Developer")
 
     const userId = req.user.id;
 

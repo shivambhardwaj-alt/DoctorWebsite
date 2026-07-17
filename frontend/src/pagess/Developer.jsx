@@ -28,7 +28,6 @@ const { data } = await axios.post(
   }
 );
 
-     
       
      if(data.success){
       setStatus('Message sent successfully. Thanks for Connecting');

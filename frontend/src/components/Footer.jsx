@@ -11,10 +11,10 @@ const Footer = () => {
         .font-chart-mono { font-family: 'JetBrains Mono', monospace; }
       `}</style>
 
-      {/* Main content */}
+   
       <div className="max-w-7xl mx-auto px-6 lg:px-20 py-14 sm:py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
 
-        {/* Brand */}
+       
         <div className="space-y-5">
           <div className="flex items-center gap-3">
             <img
@@ -30,16 +30,15 @@ const Footer = () => {
           </p>
 
           <div className="flex gap-2">
-            <a href="#" aria-label="WhatsApp" className="w-9 h-9 rounded-sm border border-white/15 flex items-center justify-center hover:border-[#3B8A6E] hover:bg-white/5 transition-colors">
+            <a href="#" aria-label="WhatsApp" className="w-9 h-9 rounded-sm border border-white/15 bg-white/90 flex items-center justify-center hover:border-[#3B8A6E] hover:bg-white transition-colors">
               <img src={assets.whatsapp} alt="" className="w-4" />
             </a>
-            <a href="#" aria-label="Phone" className="w-9 h-9 rounded-sm border border-white/15 flex items-center justify-center hover:border-[#3B8A6E] hover:bg-white/5 transition-colors">
+            <a href="#" aria-label="Phone" className="w-9 h-9 rounded-sm border border-white/15 bg-white/90 flex items-center justify-center hover:border-[#3B8A6E] hover:bg-white transition-colors">
               <img src={assets.phone} alt="" className="w-4" />
             </a>
           </div>
         </div>
 
-        {/* Company */}
         <div>
           <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#5DCAA5] uppercase mb-4">Company</p>
           <ul className="space-y-2.5 text-sm text-white/70">
@@ -51,7 +50,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Services */}
+   
         <div>
           <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#5DCAA5] uppercase mb-4">Services</p>
           <ul className="space-y-2.5 text-sm text-white/70">
@@ -63,7 +62,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Contact */}
+
         <div>
           <p className="font-chart-mono text-[10px] tracking-[0.2em] text-[#5DCAA5] uppercase mb-4">Get in touch</p>
           <div className="space-y-3 text-sm">
@@ -79,7 +78,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom bar */}
+
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-20 py-5 flex flex-col md:flex-row justify-between items-center gap-3 font-chart-mono text-[11px] tracking-[0.05em] text-white/50">
           <p>&copy; 2025 CareConnect. All rights reserved.</p>
