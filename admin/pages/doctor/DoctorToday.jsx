@@ -12,7 +12,7 @@ const DoctorToday = () => {
     setCompletingId(appointmentId);
     try {
       const { data } = await axios.post(
-        `${backend_url}/api/doctor/complete-appointment`,
+        `${backend_url}/api/doctor/mark-complete-appointment`,
         { appointmentId },
         {
           headers: { Authorization: `Bearer ${doctorToken}` },

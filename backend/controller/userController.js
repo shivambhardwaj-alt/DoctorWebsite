@@ -399,30 +399,25 @@ const getBookedSlots = async (req, res) => {
   try {
     const { docId } = req.params;
 
-    const docData = await doctorModel.findById(docId).select('slots_booked');
 
-    if (!docData) {
-      return res.json({ success: false, message: 'Doctor not found' });
-    }
+    const appointments = await appointmentModel.find({
+      doc_id: docId,
+      cancelled: { $ne: true }
+    });
 
-    const slots_booked = docData.slots_booked || {};
-    const bookedSlots = [];
-
-    for (const slot_date in slots_booked) {
-      const [day, month, year] = slot_date.split('-');
-      const times = slots_booked[slot_date];
-      times.forEach(time => {
-        bookedSlots.push(`${year}-${month}-${day}_${time}`);
-      });
-    }
+    const bookedSlots = appointments.map(
+      (appointment) => `${appointment.slot_date}_${appointment.slotTime}`
+    );
 
     res.json({ success: true, bookedSlots });
 
   } catch (error) {
     console.log(error);
-    res.json({ success: false, error: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
+
+export default getBookedSlots;
 
 export {
   registerUser,

@@ -8,7 +8,6 @@
 frontend/build/
 admin/build/
 backend/dist/
-backend/uploads/
 
 # Logs
 *.log

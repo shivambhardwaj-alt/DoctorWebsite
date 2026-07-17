@@ -10,6 +10,14 @@ const SLOT_INTERVAL_MIN = 30
 const DAY_END_HOUR = 21
 const DAY_START_HOUR = 10
 
+const formatTime = (date) => {
+  let hours = date.getHours()
+  const minutes = date.getMinutes()
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12 || 12
+  return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`
+}
+
 const Appointment = () => {
 
   const { id } = useParams()
@@ -49,7 +57,7 @@ const Appointment = () => {
   }, [docInfo, fetchBooked])
 
   const buildSlotKey = (date, time) =>
-    `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${time}`
+    `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}_${time}`
 
   useEffect(() => {
     if (!docInfo) return
@@ -77,7 +85,7 @@ const Appointment = () => {
       const slots = []
       const cursor = new Date(startTime)
       while (cursor < endTime) {
-        const timeLabel = cursor.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        const timeLabel = formatTime(cursor)
         const key = buildSlotKey(cursor, timeLabel)
         slots.push({
           datetime: new Date(cursor),
